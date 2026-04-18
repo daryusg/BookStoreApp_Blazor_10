@@ -1,13 +1,19 @@
+using BookStoreApp.API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnection");
+builder.Services.AddDbContext<BookStoreDbContext>(options =>
+    options.UseSqlServer(connString)); //cip...12
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration)); //cip...12. Serilog configuration. We are using the Serilog.AspNetCore package, which provides the UseSerilog extension method for configuring Serilog as the logging provider for the application. The lambda expression passed to UseSerilog allows us to configure Serilog using the LoggerConfiguration object (lc) and the application configuration (ctx.Configuration). In this example, we are configuring Serilog to write logs to the console and read additional configuration settings from the application's configuration files (e.g., appsettings.json).
+builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration)); //cip...12
 
 //cip...12. esssentially, this is the ootb (default) policy.
 builder.Services.AddCors(options =>
