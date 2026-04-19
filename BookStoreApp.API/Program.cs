@@ -1,3 +1,5 @@
+using AutoMapper;
+using BookStoreApp.API.Configurations;
 using BookStoreApp.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -8,6 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnection");
 builder.Services.AddDbContext<BookStoreDbContext>(options =>
     options.UseSqlServer(connString)); //cip...12
+//builder.Services.AddAutoMapper(typeof(MapperConfig)); //deprecated in favor of the following line, which is more concise and achieves the same result.
+builder.Services.AddAutoMapper(cfg => //cip...12 + chatgpt
+{
+  cfg.AddProfile<MapperConfig>();
+}, typeof(Program));
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
