@@ -93,62 +93,6 @@ namespace BookStoreApp.API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "80694358-624b-4319-ae5e-a1b274898944",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "3962354b-f9fd-4527-905f-23d391098eb8",
-                            Email = "user1@bookstore.com",
-                            EmailConfirmed = false,
-                            FirstName = "User1",
-                            LastName = "Base",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER1@BOOKSTORE.COM",
-                            NormalizedUserName = "USER1@BOOKSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDqWaST4ylDTsil73/Y3hi1KQ3IAxm0HX9KNfxd06DEZpe3Za363Kz5vYORwsXZTBQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "3f535804-8dcc-4995-a304-817d7925fd65",
-                            TwoFactorEnabled = false,
-                            UserName = "user1@bookstore.com"
-                        },
-                        new
-                        {
-                            Id = "635900df-1c6a-44b1-99ec-b17b3ce50f09",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "34ba2f93-e22a-4fa1-b9b7-2964d1b1a315",
-                            Email = "user2@bookstore.com",
-                            EmailConfirmed = false,
-                            FirstName = "User2",
-                            LastName = "Base",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER2@BOOKSTORE.COM",
-                            NormalizedUserName = "USER2@BOOKSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKN7UXJ9C6e0wdt5kg5nvKjKGyyj9l1CmybyGyK3ELZIFJz1h/0wCHAnasQbk6rPGA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "c4e7cd4a-a9ae-4cd8-9b63-0655937efe4b",
-                            TwoFactorEnabled = false,
-                            UserName = "user2@bookstore.com"
-                        },
-                        new
-                        {
-                            Id = "44df811f-f198-4e8f-abdf-937a878695a5",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "9c023e80-81c0-406c-a568-9e9c0f402801",
-                            Email = "admin1@bookstore.com",
-                            EmailConfirmed = false,
-                            FirstName = "Admin1",
-                            LastName = "Base",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN1@BOOKSTORE.COM",
-                            NormalizedUserName = "ADMIN1@BOOKSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAT9g+f3RAkxEsIOu9jxMqvEdoGBwDi501moRzJHkSqWN0abu3FAS47Ul2fAlLwB6w==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "2bb119ea-5f74-4ccf-8ae5-18b3365d728c",
-                            TwoFactorEnabled = false,
-                            UserName = "admin1@bookstore.com"
-                        });
                 });
 
             modelBuilder.Entity("BookStoreApp.API.Data.Author", b =>
@@ -247,22 +191,6 @@ namespace BookStoreApp.API.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "cddf5286-1e11-49cb-8e8d-b3edb0cbc0c9",
-                            ConcurrencyStamp = "8f264ef3-4548-4f23-88f0-3ddd88ffce4a",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        },
-                        new
-                        {
-                            Id = "7b85bba7-cb77-4a37-81ab-bfcdd6efe4da",
-                            ConcurrencyStamp = "3399449d-6185-4d98-bb99-77f443600803",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -350,23 +278,6 @@ namespace BookStoreApp.API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "80694358-624b-4319-ae5e-a1b274898944",
-                            RoleId = "cddf5286-1e11-49cb-8e8d-b3edb0cbc0c9"
-                        },
-                        new
-                        {
-                            UserId = "635900df-1c6a-44b1-99ec-b17b3ce50f09",
-                            RoleId = "cddf5286-1e11-49cb-8e8d-b3edb0cbc0c9"
-                        },
-                        new
-                        {
-                            UserId = "44df811f-f198-4e8f-abdf-937a878695a5",
-                            RoleId = "7b85bba7-cb77-4a37-81ab-bfcdd6efe4da"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

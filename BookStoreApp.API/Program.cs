@@ -1,6 +1,6 @@
-using AutoMapper;
 using BookStoreApp.API.Configurations;
 using BookStoreApp.API.Data;
+using BookStoreApp.API.Static;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -38,6 +38,16 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+//cip...30 seeding roles, users, and user-role relationships
+//IMPORTANT: chatgpt advised me to move this seeding logic to a separate class to avoid issues with the PasswordHash, ConcurrencyStamp, SecurityStamp values using tw's method. this seed users/roles at runtime and not in migrations. this completely avoids: Hardcoding hashes, Migration churn, EF warnings. i previously had to run add-migration, copy the generated hashes, and then update the migration to insert those hashes. this is a much cleaner approach.
+using (var scope = app.Services.CreateScope())
+{
+  var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApiUser>>();
+  var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+  await SeedRolesAndUsers.SeedAsync(userManager, roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
