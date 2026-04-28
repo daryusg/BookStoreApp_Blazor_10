@@ -1,9 +1,14 @@
 using BookStoreApp.API.Configurations;
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Static;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +42,25 @@ builder.Services.AddCors(options =>
                         .AllowAnyHeader());
 });
 
+builder.Services.AddAuthentication(options => //cip...32
+{
+  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+  options.TokenValidationParameters = new TokenValidationParameters
+  {
+    ValidateIssuerSigningKey = true,
+    ValidateIssuer = true,
+    ValidateAudience=true,
+    ValidateLifetime = true,
+    ClockSkew =TimeSpan.Zero,
+    ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+    ValidAudience = builder.Configuration["JwtSettings:Audience"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+  };
+});
+
 var app = builder.Build();
 
 //cip...30 seeding roles, users, and user-role relationships
@@ -60,6 +84,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll"); //cip...12
 
+app.UseAuthentication(); //cip...32
 app.UseAuthorization();
 
 app.MapControllers();
