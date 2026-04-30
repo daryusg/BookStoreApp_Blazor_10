@@ -11,7 +11,7 @@
     </div>
 }
 
-<div class="card-body">
+<div>
     <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration" FormName="RegisterForm">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -55,21 +55,14 @@
     {
         try
         {
+            //NOTE: i've appended the attribute [ProducesResponseType(StatusCodes.Status202Accepted)] to RegisterAsync so that nswag properly handles the response and doesn't throw an exception when it receives a 202 status code.
+            //This is because the RegisterAsync method returns a 202 status code when the registration is successful, but nswag expects a 200 status code by default.
             await httpClient.RegisterAsync(RegistrationModel);
-            NavigateToLogin();
+            navManager.NavigateTo("/users/LoginUserDto");
         }
         catch (ApiException ex)
         {
-            if (ex.StatusCode >= 200 && ex.StatusCode < 300)
-            {
-                NavigateToLogin();
-            }
-            message = ex.Message;
+            message = ex.Response;
         }
-    }
-
-    private void NavigateToLogin()
-    {
-        navManager.NavigateTo("/users/login");
     }
 }

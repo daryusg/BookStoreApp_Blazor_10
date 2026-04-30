@@ -73,6 +73,7 @@ namespace BookStoreApp.API.Controllers
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
     [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutAuthor(int id, AuthorUpdateDto authorDto) //cip...20
     {
       try //cip...21
@@ -150,6 +151,7 @@ namespace BookStoreApp.API.Controllers
     // DELETE: api/Authors/5
     [HttpDelete("{id}")]
     [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteAuthor(int id)
     {
       try //cip...21

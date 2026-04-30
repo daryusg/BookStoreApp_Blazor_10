@@ -1,4 +1,6 @@
+using Blazored.LocalStorage;
 using BookStoreApp.Blazor.Web.UI.Components;
+using BookStoreApp.Blazor.Web.UI.Services.Authentication;
 using BookStoreApp.Blazor.Web.UI.Services.Base;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,11 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddBlazoredLocalStorage(); //cip...40
 
 builder.Services.AddHttpClient<IClient, Client>(client =>
 {
   client.BaseAddress = new Uri("https://localhost:7244");
 }); //cip...38
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); //cip...40
 
 var app = builder.Build();
 

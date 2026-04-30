@@ -31,6 +31,7 @@ namespace BookStoreApp.API.Controllers
 
     [HttpPost]
     [Route("register")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> Register(UserDto userDto)
     {
       /* not needed because .net will validate the model automatically via [Required] attribute
@@ -72,8 +73,8 @@ namespace BookStoreApp.API.Controllers
       }
     }
 
-    [HttpPost]
-    [Route("login")]
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status202Accepted)]
     public async Task<ActionResult<AuthResponse>> Login(LoginUserDto userDto)
     {
       _logger.LogInformation($"{nameof(Login)} request: {userDto.Email}");
@@ -102,7 +103,6 @@ namespace BookStoreApp.API.Controllers
 
         _logger.LogInformation($"Successful {nameof(Login).ToLower()}: {userDto.Email}");
         return Accepted(response); // Return 202 Accepted for successful login
-
       }
       catch (Exception ex)
       {
