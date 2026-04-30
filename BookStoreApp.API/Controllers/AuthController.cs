@@ -40,7 +40,7 @@ namespace BookStoreApp.API.Controllers
           return BadRequest("Invalid user data.");
       }*/
       // Registration logic here
-      _logger.LogInformation($"Request to {nameof(Register)} with email: {userDto.Email}");
+      _logger.LogInformation($"{nameof(Register)} request: {userDto.Email}");
       try
       {
         var user = _mapper.Map<ApiUser>(userDto); // Assuming ApiUser is the user entity
@@ -62,7 +62,7 @@ namespace BookStoreApp.API.Controllers
 
         //return Ok(new { Message = "User registered successfully." });
         //return Accepted(new { Message = "User registered successfully." });
-        _logger.LogInformation($"Success: {userDto.Email}");
+        _logger.LogInformation($"Successful {nameof(Login).ToLower()}: {userDto.Email}");
         return Accepted();
       }
       catch (Exception ex)
@@ -76,7 +76,7 @@ namespace BookStoreApp.API.Controllers
     [Route("login")]
     public async Task<ActionResult<AuthResponse>> Login(LoginUserDto userDto)
     {
-      _logger.LogInformation($"Request to {nameof(Login)} with email: {userDto.Email}");
+      _logger.LogInformation($"{nameof(Login)} request: {userDto.Email}");
       try
       {
         var user = await _userManager.FindByEmailAsync(userDto.Email);
@@ -100,6 +100,7 @@ namespace BookStoreApp.API.Controllers
           Email = userDto.Email
         };
 
+        _logger.LogInformation($"Successful {nameof(Login).ToLower()}: {userDto.Email}");
         return Accepted(response); // Return 202 Accepted for successful login
 
       }

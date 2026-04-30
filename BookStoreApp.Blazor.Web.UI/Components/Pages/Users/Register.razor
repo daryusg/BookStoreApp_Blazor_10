@@ -1,0 +1,18 @@
+﻿@page "/users/register"
+
+<h3>Register New Account</h3>
+
+<div class="card-body">
+    <EditForm Model="RegistrationModel" OnValidSubmit="HandleRegistration">
+
+    </EditForm>
+
+</div>
+
+@code {
+    UserDto RegistrationModel = new UserDto();
+
+    private async Task HandleRegistration()
+    {
+    }    // Implement registration logic here, such as calling an API to create a new user account
+}
