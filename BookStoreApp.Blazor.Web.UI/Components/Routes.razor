@@ -1,6 +1,33 @@
-﻿<Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
-    <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-</Router>
+﻿<CascadingAuthenticationState> @*cip...41 (chatgpt alteration)*@
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+
+                <NotAuthorized Context="routeAuthState">
+                    <AuthorizeView Context="authViewState">
+                        <NotAuthorized>
+                            <RedirectToLogin />
+                        </NotAuthorized>
+
+                        <Authorized>
+                            <div class="alert alert-warning">
+                                <p>You are not authorized to access this resource.</p>
+                            </div>
+                        </Authorized>
+                    </AuthorizeView>
+                </NotAuthorized>
+
+            </AuthorizeRouteView>
+
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

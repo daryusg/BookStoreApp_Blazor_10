@@ -1,0 +1,10 @@
+﻿@inject NavigationManager NavigationManager; //cip...41
+
+<h3>RedirectToLogin</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo("/users/login");
+    }
+}

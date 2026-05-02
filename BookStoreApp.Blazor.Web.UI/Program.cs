@@ -16,6 +16,7 @@ builder.Services.AddHttpClient<IClient, Client>(client =>
   client.BaseAddress = new Uri("https://localhost:7244");
 }); //cip...38
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); //cip...40
+builder.Services.AddScoped<ApiAuthenticationStateProvider>(); //cip...41
 builder.Services.AddScoped<AuthenticationStateProvider>(
     provider => provider.GetRequiredService<ApiAuthenticationStateProvider>()
   ); //cip...40
