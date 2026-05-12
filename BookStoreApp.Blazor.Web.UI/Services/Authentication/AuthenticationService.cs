@@ -28,4 +28,10 @@ public class AuthenticationService : IAuthenticationService //cip...40
 
     return true;
   }
+
+  public async Task LogoutAsync() //cip...41
+  {
+    //change auth state of the app
+    await((ApiAuthenticationStateProvider)_authenticationStateProvider).LoggedOutAsync();
+  }
 }

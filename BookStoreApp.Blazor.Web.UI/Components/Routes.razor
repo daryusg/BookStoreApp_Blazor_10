@@ -1,9 +1,7 @@
 ﻿<CascadingAuthenticationState> @*cip...41 (chatgpt alteration)*@
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-
                 <NotAuthorized Context="routeAuthState">
                     <AuthorizeView Context="authViewState">
                         <NotAuthorized>
@@ -17,12 +15,9 @@
                         </Authorized>
                     </AuthorizeView>
                 </NotAuthorized>
-
             </AuthorizeRouteView>
-
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
-
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">

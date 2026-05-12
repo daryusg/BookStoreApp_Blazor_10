@@ -9,9 +9,9 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider //cip.
 {
   private readonly ILocalStorageService _localStorage;
 
-  public ApiAuthenticationStateProvider(ILocalStorageService localStorageService)
+  public ApiAuthenticationStateProvider(ILocalStorageService localStorage)
   {
-    this._localStorage = localStorageService;
+    this._localStorage = localStorage;
   }
   public override async Task<AuthenticationState> GetAuthenticationStateAsync()
   {
@@ -35,7 +35,11 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider //cip.
     }
 
     // Extract claims
-    var identity = new ClaimsIdentity(token.Claims, "jwt");
+    var claims = token.Claims.ToList();
+    //add the Name claim to the claims collection, so that we can use @context.User.Identity.Name in our components //cip...41
+    claims.Add(new Claim(ClaimTypes.Name, token.Subject));
+
+    var identity = new ClaimsIdentity(claims, "jwt");
     user = new ClaimsPrincipal(identity);
 
     return new AuthenticationState(user); //return claims principal

@@ -2,7 +2,8 @@
 
 namespace BookStoreApp.Blazor.Web.UI.Services.Authentication;
 
-public interface IAuthenticationService
+public interface IAuthenticationService //cip...40
 {
   Task<bool> AuthenticateAsync(LoginUserDto loginModel);
+  public Task LogoutAsync(); //cip...41
 }

@@ -1,6 +1,7 @@
 ﻿@page "/users/login" //cip...40
 @using BookStoreApp.Blazor.Web.UI.Services.Authentication
 @inject IAuthenticationService authService;
+@inject NavigationManager navManager; //cip...41
 
 <h3>Login</h3>
 
@@ -33,11 +34,14 @@
         try
         {
             var response = await authService.AuthenticateAsync(LoginModel);
+            if (response)
+                navManager.NavigateTo("/");
+            else
+                message = $"Login failed: Please try again";
         }
-        catch (Exception)
+        catch (ApiException ex)
         {
-            
-            throw;
+            message = ex.Response;
         }
     }
 }
