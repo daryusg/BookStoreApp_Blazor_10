@@ -48,14 +48,14 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider //cip.
   public async Task LoggedInAsync()
   {
     var authState = await GetAuthenticationStateAsync();
-    NotifyAuthenticationStateChanged(Task.FromResult(authState));
+    NotifyAuthenticationStateChanged(Task.FromResult(authState)); //let the app know that the user is now logged in, so that it can update the UI accordingly
   }
 
   public async Task LoggedOutAsync()
   {
-    await _localStorage.RemoveItemAsync("authToken");
+    await _localStorage.RemoveItemAsync("authToken"); //remove the token from local storage
     var anonymousUser = new ClaimsPrincipal(new ClaimsIdentity());
     var authState = Task.FromResult(new AuthenticationState(anonymousUser));
-    NotifyAuthenticationStateChanged(authState);
+    NotifyAuthenticationStateChanged(authState); //let the app know that the user is now logged out, so that it can update the UI accordingly
   }
 }
