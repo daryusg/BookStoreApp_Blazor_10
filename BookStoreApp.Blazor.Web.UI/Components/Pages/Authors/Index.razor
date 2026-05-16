@@ -1,8 +1,13 @@
 ﻿@page "/authors/" //cip...44
-@inject IClient httpClient
+@inject IAuthorService authorService //cip...45
 
 <h3>Index</h3>
-
+@if (!response.Success)
+{
+    <div class="alert alert-danger">
+        <h4>@response.Message</h4>
+    </div>
+}
 @if (authors == null)
 {
     <div class="alert alert-info">
@@ -11,7 +16,7 @@
 }
 else
 {
-    <a class="btn btn-dark" href="/authors/create"><span class="oi oi-plus" aria-hidden="true"></span>Create Author</a>
+    <a class="btn btn-dark" href="/authors/create"><span class="bi bi-plus" aria-hidden="true"></span>Create</a>
     <br />
     <table class="table table-responsive">
         <thead>
@@ -28,9 +33,9 @@ else
                     <td>@author.FirstName</td>
                     <td>@author.LastName</td>
                     <td>
-                        <a class="btn btn-primary" href="/authors/details/@author.Id"><span class="oi oi-book" aria-hidden="true"></span>View</a>
-                        <a class="btn btn-warning" href="/authors/edit/@author.Id"><span  class="oi oi-pencil" aria-hidden="true"></span>Edit</a>
-                        <a class="btn btn-danger" href="/authors/delete/@author.Id"><span class="oi oi-delete" aria-hidden="true"></span>Delete</a>
+                        <a class="btn btn-primary" href="/authors/details/@author.Id"><span class="bi bi-book" aria-hidden="true"></span>View</a>
+                        <a class="btn btn-warning" href="/authors/edit/@author.Id"><span class="bi bi-pencil" aria-hidden="true"></span>Edit</a>
+                        <a class="btn btn-danger" href="/authors/delete/@author.Id"><span class="bi bi-trash" aria-hidden="true"></span>Delete</a>
                     </td>
                 </tr>
             }
@@ -40,9 +45,14 @@ else
 
 @code {
     private List<AuthorReadOnlyDto> authors;
+    private Response<List<AuthorReadOnlyDto>> response = new() {Success = true};
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync() //cip...44,45
     {
-        authors = (await httpClient.AuthorsAllAsync()).ToList();
+        response = await authorService.GetAuthorsAsync();
+        if (response.Success)
+        {
+            authors = response.Data;
+        }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using BookStoreApp.Blazor.Web.UI.Services.Base;
 
-namespace BookStoreApp.Blazor.Web.UI.Services
+namespace BookStoreApp.Blazor.Web.UI.Services;
+
+public interface IAuthorService //cip...45
 {
-  public interface IAuthorService //cip...45
-  {
-    Task<Response<List<AuthorReadOnlyDto>>> GetAuthorsAsync();
-  }
+  Task<Response<List<AuthorReadOnlyDto>>> GetAuthorsAsync();
 }

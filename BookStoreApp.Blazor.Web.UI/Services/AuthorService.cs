@@ -1,9 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using BookStoreApp.Blazor.Web.UI.Services.Base;
 
-namespace BookStoreApp.Blazor.Web.UI.Services; //cip...45
+namespace BookStoreApp.Blazor.Web.UI.Services;
 
-public class AuthorService : BaseHttpService, IAuthorService
+public class AuthorService : BaseHttpService, IAuthorService //cip...45
 {
   private readonly IClient _client;
 
@@ -21,7 +21,8 @@ public class AuthorService : BaseHttpService, IAuthorService
       var data = await _client.AuthorsAllAsync();
       response = new Response<List<AuthorReadOnlyDto>>
       {
-        Data = data.ToList()
+        Data = data.ToList(),
+        Success = true
       };
     }
     catch (ApiException apiException)

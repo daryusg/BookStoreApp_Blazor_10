@@ -24,6 +24,7 @@ public class BaseHttpService //cip...45
           {
             Message = "Validation errors have occurred.",
             ValidationErrors = apiException.Response,
+            Success = false
           };
         }
       case 404:
@@ -31,6 +32,7 @@ public class BaseHttpService //cip...45
           return new Response<T>
           {
             Message = "The requested resource could not be found.",
+            Success = false
           };
         }
       case 401: //copilot
@@ -38,18 +40,19 @@ public class BaseHttpService //cip...45
           return new Response<T>
           {
             Message = "You are not authorized to perform this action.",
+            Success = false
           };
         }
       default:
         {
-          return new Response<T> { Message = "Something went wrong. Please try again later." };
+          return new Response<T> { Message = "Something went wrong. Please try again later.", Success = false };
         }
     }
   }
 
   protected async Task GetBearerTokenAsync()
   {
-    var token = await _localStorageService.GetItemAsync<string>("accessToken");
+    var token = await _localStorageService.GetItemAsync<string>("authToken");
     if (!string.IsNullOrEmpty(token))
     {
       _client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
