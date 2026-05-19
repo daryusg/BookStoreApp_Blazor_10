@@ -54,12 +54,12 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<AuthorReadOnlyDto>> AuthorsAllAsync(System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AuthorCreateDto> AuthorsPOSTAsync(AuthorCreateDto body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<AuthorCreateDto> AuthorsPOSTAsync(AuthorCreateDto body, System.Threading.CancellationToken cancellationToken);
 
@@ -99,12 +99,12 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<BookReadOnlyDto>> BooksAllAsync(System.Threading.CancellationToken cancellationToken);
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BookCreateDto> BooksPOSTAsync(BookCreateDto body);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<BookCreateDto> BooksPOSTAsync(BookCreateDto body, System.Threading.CancellationToken cancellationToken);
 
@@ -414,7 +414,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
             }
         }
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<AuthorCreateDto> AuthorsPOSTAsync(AuthorCreateDto body)
         {
@@ -422,7 +422,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<AuthorCreateDto> AuthorsPOSTAsync(AuthorCreateDto body, System.Threading.CancellationToken cancellationToken)
         {
@@ -467,7 +467,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<AuthorCreateDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
@@ -812,7 +812,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
             }
         }
 
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<BookCreateDto> BooksPOSTAsync(BookCreateDto body)
         {
@@ -820,7 +820,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>OK</returns>
+        /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<BookCreateDto> BooksPOSTAsync(BookCreateDto body, System.Threading.CancellationToken cancellationToken)
         {
@@ -865,7 +865,7 @@ namespace BookStoreApp.Blazor.Web.UI.Services.Base
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 201)
                         {
                             var objectResponse_ = await ReadObjectResponseAsync<BookCreateDto>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)

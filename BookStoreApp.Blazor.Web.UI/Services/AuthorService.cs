@@ -12,6 +12,22 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     this._client = client;
   }
 
+  public async Task<Response<int>> CreateAuthorAsync(AuthorCreateDto author) //cip...46
+  {
+    Response<int> response = new() { Success = true };
+    try
+    {
+      await GetBearerTokenAsync();
+      await _client.AuthorsPOSTAsync(author);
+    }
+    catch (ApiException apiException)
+    {
+      response = ConvertApiExceptions<int>(apiException);
+    }
+
+    return response;
+  }
+
   public async Task<Response<List<AuthorReadOnlyDto>>> GetAuthorsAsync()
   {
     Response<List<AuthorReadOnlyDto>> response;

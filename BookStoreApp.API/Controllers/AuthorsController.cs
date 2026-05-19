@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure;
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Models.Author;
 using BookStoreApp.API.Static;
@@ -122,6 +123,7 @@ namespace BookStoreApp.API.Controllers
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(StatusCodes.Status201Created)] //CreatedAtAction(string? actionName, object? routeValues, object? value):::Creates a CreatedAtActionResult object that produces a Status201Created response.
     public async Task<ActionResult<AuthorCreateDto>> PostAuthor(AuthorCreateDto authorDto)  //cip...20
     {
       try //cip...21

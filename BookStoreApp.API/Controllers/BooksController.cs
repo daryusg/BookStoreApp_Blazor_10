@@ -97,6 +97,7 @@ namespace BookStoreApp.API.Controllers
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
     [Authorize(Roles = Roles.Administrator)]
+    [ProducesResponseType(StatusCodes.Status201Created)] //CreatedAtAction(string? actionName, object? routeValues, object? value):::Creates a CreatedAtActionResult object that produces a Status201Created response.
     public async Task<ActionResult<BookCreateDto>> PostBook(BookCreateDto bookDto) //cip...25
     {
       var book = _mapper.Map<Book>(bookDto); // Map the BookCreateDto to a Book entity
