@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Azure;
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Models.Author;
@@ -48,19 +49,23 @@ namespace BookStoreApp.API.Controllers
 
     // GET: api/Authors/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)
+    //public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)
+    public async Task<ActionResult<AuthorDetailsDto>> GetAuthor(int id) //cip...48
     {
       try //cip...21
       {
-        var author = await _context.Authors.FindAsync(id);
+        //var author = await _context.Authors.FindAsync(id);
+        var authorDto = await _context.Authors
+          .Include(a => a.Books) //cip...48 available because of public virtual ICollection<Book> Books { get; set; } = new List<Book>(); in BookStoreApp.API.Data.Author class
+          .ProjectTo<AuthorDetailsDto>(_mapper.ConfigurationProvider) //cip...48
+          .FirstOrDefaultAsync(a => a.Id == id);
 
-        if (author == null)
+        if (authorDto == null)
         {
           _logger.LogWarning($"Author with id {id} not found in {nameof(GetAuthor)}"); //cip...21
           return NotFound();
         }
 
-        var authorDto = _mapper.Map<AuthorReadOnlyDto>(author); //cip...20
         return Ok(authorDto);
       }
       catch (Exception ex) //cip...21
