@@ -1,16 +1,18 @@
-﻿@page "/authors/create" //cip...46
+﻿@page "/authors/update/{id:int}" //cip...47
 @inject IAuthorService authorService
 @inject NavigationManager navManager
+@using AutoMapper
+@inject IMapper _mapper
 
-<h3>Create New Author</h3>
+<h3>Edit Author</h3>
 <br />
-<EditForm Model="Author" OnValidSubmit="HandleCreateAuthorAsync" FormName="CreateAuthor">
+<EditForm Model="Author" OnValidSubmit="HandleUpdateAuthorAsync" FormName="UpdateAuthor">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-group">
         <label for="firstName">Firstname</label>
-        <InputText id="firstName" @bind-Value="Author.FirstName" class="form-control"/>
+        <InputText id="firstName" @bind-Value="Author.FirstName" class="form-control" />
         <ValidationMessage For="@(() => Author.FirstName)" />
     </div>
     <br />
@@ -27,8 +29,8 @@
     </div>
     <br />
     <button type="submit" class="btn btn-primary">
-        <span class="bi bi-plus"></span>
-        Create Author
+        <span class="bi bi-pencil-fill"></span>
+        Update Author
     </button>
     <button @onclick="NavigateToAuthors" class="btn btn-secondary">
         <span class="bi bi-rewind-fill"></span>
@@ -37,11 +39,22 @@
 </EditForm>
 
 @code {
-    private AuthorCreateDto Author { get; set; } = new();
+    [Parameter]
+    public int id { get; set; } //automatically binds to the route parameter
 
-    private async Task HandleCreateAuthorAsync()
+    private AuthorUpdateDto Author { get; set; } = new();
+
+    //when the component loads, get the author details and populate the form
+    override protected async Task OnInitializedAsync()
     {
-        var response = await authorService.CreateAuthorAsync(Author);
+        var response = await authorService.GetAuthorAsync(id);
+        if (response.Success)
+            Author = _mapper.Map<AuthorUpdateDto>(response.Data); //map from AuthorReadOnlyDto to AuthorUpdateDto
+    }
+
+    private async Task HandleUpdateAuthorAsync()
+    {
+        var response = await authorService.UpdateAuthorAsync(id, Author);
         if (response.Success)
             NavigateToAuthors();
     }

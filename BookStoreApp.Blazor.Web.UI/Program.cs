@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using BookStoreApp.Blazor.Web.UI.Components;
+using BookStoreApp.Blazor.Web.UI.Configurations;
 using BookStoreApp.Blazor.Web.UI.Providers;
 using BookStoreApp.Blazor.Web.UI.Services;
 using BookStoreApp.Blazor.Web.UI.Services.Authentication;
@@ -18,6 +19,12 @@ builder.Services.AddHttpClient<IClient, Client>(client =>
 }); //cip...38
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); //cip...40
 builder.Services.AddScoped<IAuthorService, AuthorService>(); //cip...45
+
+builder.Services.AddAutoMapper(cfg => //cip...47 (12 + chatgpt)
+{
+  cfg.AddProfile<MapperConfig>();
+}, typeof(Program));
+
 builder.Services.AddScoped<ApiAuthenticationStateProvider>(); //cip...41
 builder.Services.AddScoped<AuthenticationStateProvider>(
     provider => provider.GetRequiredService<ApiAuthenticationStateProvider>()
