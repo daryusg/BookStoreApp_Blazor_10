@@ -7,7 +7,7 @@
 <h3>Author Details</h3>
 <br />
 <EditForm Model="Author" FormName="AuthorDetails">
-    <fieldset disabled="true">
+    <fieldset disabled>
         <div class="form-group">
             <label for="firstName">Firstname</label>
             <InputText id="firstName" @bind-Value="Author.FirstName" class="form-control" />
@@ -68,7 +68,7 @@
     //when the component loads, get the author details and populate the form
     override protected async Task OnInitializedAsync()
     {
-        var response = await authorService.GetAuthorAsync(id);
+        var response = await authorService.GetAsync(id);
         if (response.Success)
             Author = response.Data;
     }

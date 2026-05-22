@@ -41,7 +41,7 @@
 
     private async Task HandleCreateAuthorAsync()
     {
-        var response = await authorService.CreateAuthorAsync(Author);
+        var response = await authorService.CreateAsync(Author);
         if (response.Success)
             NavigateToAuthors();
     }

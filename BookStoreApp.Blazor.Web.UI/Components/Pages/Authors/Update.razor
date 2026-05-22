@@ -47,14 +47,14 @@
     //when the component loads, get the author details and populate the form
     override protected async Task OnInitializedAsync()
     {
-        var response = await authorService.GetAuthorAsync(id);
+        var response = await authorService.GetAsync(id);
         if (response.Success)
             Author = _mapper.Map<AuthorUpdateDto>(response.Data); //map from AuthorReadOnlyDto to AuthorUpdateDto
     }
 
     private async Task HandleUpdateAuthorAsync()
     {
-        var response = await authorService.UpdateAuthorAsync(id, Author);
+        var response = await authorService.UpdateAsync(id, Author);
         if (response.Success)
             NavigateToAuthors();
     }
