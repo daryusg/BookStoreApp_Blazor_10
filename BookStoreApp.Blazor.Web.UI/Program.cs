@@ -30,6 +30,33 @@ builder.Services.AddScoped<AuthenticationStateProvider>(
     provider => provider.GetRequiredService<ApiAuthenticationStateProvider>()
   ); //cip...40
 
+// ----------------------------------------------------------
+// AUTHENTICATION / AUTHORIZATION (cip...50 from chatgpt)
+// ----------------------------------------------------------
+builder.Services
+    .AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+      options.LoginPath = "/users/login";
+
+      // prevent redirect loops
+      options.Events.OnRedirectToLogin = context =>
+      {
+        context.Response.StatusCode = 401;
+        return Task.CompletedTask;
+      };
+
+      options.Events.OnRedirectToAccessDenied = context =>
+      {
+        context.Response.StatusCode = 403;
+        return Task.CompletedTask;
+      };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
+// ----------------------------------------------------------
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +70,13 @@ app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages:
 app.UseHttpsRedirection();
 
 app.UseAntiforgery();
+
+// ----------------------------------------------------------
+// AUTHENTICATION / AUTHORIZATION (cip...50 from chatgpt)
+// ----------------------------------------------------------
+app.UseAuthentication();
+app.UseAuthorization();
+// ----------------------------------------------------------
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

@@ -31,6 +31,7 @@ public class ApiAuthenticationStateProvider : AuthenticationStateProvider //cip.
     // Check expiry
     if (token.ValidTo < DateTime.UtcNow)
     {
+      await _localStorage.RemoveItemAsync("authToken"); //cip...50 chatgpt fix: remove expired token from local storage
       return new AuthenticationState(user); //return empty claims principal
     }
 

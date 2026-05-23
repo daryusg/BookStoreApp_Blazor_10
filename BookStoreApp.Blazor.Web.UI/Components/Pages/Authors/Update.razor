@@ -3,6 +3,7 @@
 @inject NavigationManager navManager
 @using AutoMapper
 @inject IMapper _mapper
+@attribute [Authorize(Roles = Roles.Administrator)] //cip...50
 
 <h3>Edit Author</h3>
 <br />

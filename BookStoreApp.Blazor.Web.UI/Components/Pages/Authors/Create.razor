@@ -1,6 +1,7 @@
 ﻿@page "/authors/create" //cip...46
 @inject IAuthorService authorService
 @inject NavigationManager navManager
+@attribute [Authorize(Roles = Roles.Administrator)] //cip...50
 
 <h3>Create New Author</h3>
 <br />

@@ -1,5 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using BookStoreApp.Blazor.Web.UI.Services.Base;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace BookStoreApp.Blazor.Web.UI.Services;
 
@@ -7,7 +9,9 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
 {
   private readonly IClient _client;
 
-  public AuthorService(IClient client, ILocalStorageService localStorageService) : base(client, localStorageService)
+  //public AuthorService(IClient client, ILocalStorageService localStorageService) : base(client, localStorageService)
+  public AuthorService(IClient client, ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider,
+    NavigationManager navigationManager) : base(client, localStorageService, authenticationStateProvider, navigationManager) //cip...50 chatgpt fix: add authentication state provider and navigation manager to constructor to log the user out if the token's expired.
   {
     this._client = client;
   }
