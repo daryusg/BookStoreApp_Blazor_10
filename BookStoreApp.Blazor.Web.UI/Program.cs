@@ -19,6 +19,7 @@ builder.Services.AddHttpClient<IClient, Client>(client =>
 }); //cip...38
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); //cip...40
 builder.Services.AddScoped<IAuthorService, AuthorService>(); //cip...45
+builder.Services.AddScoped<IBookService, BookService>(); //cip...53
 
 builder.Services.AddAutoMapper(cfg => //cip...47 (12 + chatgpt)
 {
