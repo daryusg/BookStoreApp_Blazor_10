@@ -15,13 +15,13 @@ public class BookService : BaseHttpService, IBookService //cip...53
     this._client = client;
   }
 
-  public async Task<Response<int>> CreateAsync(BookCreateDto Book)
+  public async Task<Response<int>> CreateAsync(BookCreateDto book)
   {
     Response<int> response = new() { Success = true };
     try
     {
       await GetBearerTokenAsync();
-      await _client.BooksPOSTAsync(Book);
+      await _client.BooksPOSTAsync(book);
     }
     catch (ApiException apiException)
     {
@@ -89,13 +89,13 @@ public class BookService : BaseHttpService, IBookService //cip...53
     return response;
   }
 
-  public async Task<Response<int>> UpdateAsync(int id, BookUpdateDto Book)
+  public async Task<Response<int>> UpdateAsync(int id, BookUpdateDto book)
   {
     Response<int> response = new() { Success = true };
     try
     {
       await GetBearerTokenAsync();
-      await _client.BooksPUTAsync(id, Book);
+      await _client.BooksPUTAsync(id, book);
     }
     catch (ApiException apiException)
     {

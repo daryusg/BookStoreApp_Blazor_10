@@ -81,6 +81,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); //cip...56. used to store images locally.
 
 app.UseCors("AllowAll"); //cip...12
 

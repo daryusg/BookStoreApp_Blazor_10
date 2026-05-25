@@ -4,6 +4,13 @@
 @inject NavigationManager navManager
 @attribute [Authorize(Roles = Roles.Administrator)]
 
+@if (!string.IsNullOrWhiteSpace(UploadFileWarning))
+{
+    <div class="alert alert-danger">
+        @UploadFileWarning
+    </div>
+}
+
 <h3>Create Book</h3>
 <br />
 <EditForm Model="Book" OnValidSubmit="HandleCreateBookAsync" FormName="CreateBook">
@@ -26,6 +33,12 @@
         <label for="price">Price</label>
         <InputNumber id="price" @bind-Value="Book.Price" class="form-control" />
         <ValidationMessage For="@(() => Book.Price)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="year">Year</label>
+        <InputNumber id="year" @bind-Value="Book.Year" class="form-control" />
+        <ValidationMessage For="@(() => Book.Year)" />
     </div>
     <br />
     <div class="form-group">
@@ -57,16 +70,19 @@
         <span class="bi bi-plus"></span>
         Create Book
     </button>
-    <button @onclick="NavigateToBooks" class="btn btn-secondary">
+    <button type="button" @onclick="NavigateToBooks" class="btn btn-secondary">
         <span class="bi bi-rewind-fill"></span>
         Back to list
     </button>
 </EditForm>
 
 @code {
-    private BookCreateDto Book { get; set; } = new();
+    private BookCreateDto Book { get; set; } = new()
+    {
+        Year = DateTime.Now.Year
+    };
     private List<AuthorReadOnlyDto> Authors { get; set; } = new();
-    private string UploadFileWarning;
+    private string UploadFileWarning = string.Empty;
     private string img = string.Empty;
 
     protected override async Task OnInitializedAsync()
@@ -90,34 +106,44 @@
 
     private async Task HandleFileSelectionAsync(InputFileChangeEventArgs args) //used chatgpt assistance due to preview image displaying inconsistently.
     {
-        UploadFileWarning = string.Empty;
-        var file = args.File;
-        if (file == null)
-            return;
-
-        var ext = Path.GetExtension(file.Name).ToLowerInvariant();
-
-        if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+        try
         {
-            UploadFileWarning = "Only JPG and PNG files are allowed.";
-            return;
-        }
+            UploadFileWarning = string.Empty;
+            var file = args.File;
+            if (file == null)
+                return;
 
-        if (file.Size > 1024 * 1024) // 1MB
+            var ext = Path.GetExtension(file.Name).ToLowerInvariant();
+
+            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            if (!permittedExtensions.Contains(ext))
+            {
+                UploadFileWarning = "Only JPG and PNG files are allowed.";
+                return;
+            }
+
+            var maxFileSize = 1024 * 1024 * 1; // 1MB limit
+            if (file.Size > maxFileSize)
+            {
+                UploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
+                return;
+            }
+
+            using var stream = file.OpenReadStream(maxAllowedSize: maxFileSize);
+            using var ms = new MemoryStream();
+
+            await stream.CopyToAsync(ms);
+
+            var bytes = ms.ToArray();
+            var base64String = Convert.ToBase64String(bytes);
+
+            Book.ImageData = base64String;
+            Book.OriginalImageName = file.Name;
+            img = $"data:{file.ContentType};base64,{base64String}";
+        }
+        catch (Exception ex)
         {
-            UploadFileWarning = "File size exceeds the 1MB limit.";
-            return;
+            UploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
         }
-
-        using var stream = file.OpenReadStream(maxAllowedSize: 1024 * 1024);
-        using var ms = new MemoryStream();
-
-        await stream.CopyToAsync(ms);
-
-        var bytes = ms.ToArray();
-
-        Book.Image = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
-        img = Book.Image;
-        StateHasChanged();
     }
 }

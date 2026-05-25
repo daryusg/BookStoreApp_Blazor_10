@@ -13,20 +13,17 @@ public class BookCreateDto //cip...25
 
   [Required]
   [Range(1000, int.MaxValue)]
-  public int Year { get; set; }
+  public int? Year { get; set; }
 
   [Required]
   public string Isbn { get; set; } = null!;
 
   [StringLength(250, MinimumLength = 10)]
   public string Summary { get; set; }
-
-  public string? Image { get; set; }
-
-  //public string? ImageData { get; set; } //cip...55. rename (note:regen nswag)
-  //public string? OriginalImageName { get; set; } //cip...55. (note:regen nswag)
+  public string? ImageData { get; set; } //cip...56. rename (note:regen nswag)
+  public string? OriginalImageName { get; set; } //cip...56. (note:regen nswag)
 
   [Required]
   [Range(0, int.MaxValue)]
-  public decimal Price { get; set; }
+  public decimal? Price { get; set; }
 }

@@ -16,11 +16,13 @@ namespace BookStoreApp.API.Controllers
   {
     private readonly BookStoreDbContext _context;
     private readonly IMapper _mapper;
+    private readonly IWebHostEnvironment _webHostEnvironment; //cip...56
 
-    public BooksController(BookStoreDbContext context, IMapper mapper)
+    public BooksController(BookStoreDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
       _context = context;
       this._mapper = mapper;
+      this._webHostEnvironment = webHostEnvironment;
     }
 
     // GET: api/Books
@@ -43,7 +45,7 @@ namespace BookStoreApp.API.Controllers
       var bookDto = await _context.Books
         .Include(b => b.Author)
         .ProjectTo<BookDetailsDto>(_mapper.ConfigurationProvider)
-        .FirstOrDefaultAsync(q => q.Id ==id);
+        .FirstOrDefaultAsync(q => q.Id == id);
 
       if (bookDto == null)
       {
@@ -101,7 +103,14 @@ namespace BookStoreApp.API.Controllers
     public async Task<ActionResult<BookCreateDto>> PostBook(BookCreateDto bookDto) //cip...25
     {
       var book = _mapper.Map<Book>(bookDto); // Map the BookCreateDto to a Book entity
+
+      if (bookDto.ImageData != null && bookDto.OriginalImageName != null) //cip...56 store the image and get the URL to save in the database
+      {
+        var imageUrl = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName);
+        book.Image = imageUrl;
+      }
       _context.Books.Add(book);
+
       await _context.SaveChangesAsync();
 
       return CreatedAtAction("GetBook", new { id = book.Id }, book);
@@ -128,6 +137,20 @@ namespace BookStoreApp.API.Controllers
     private async Task<bool> BookExistsAsync(int id) //cip...25
     {
       return await _context.Books.AnyAsync(e => e.Id == id);
+    }
+
+    private async Task<string> CreateFile(string imageBase64, string imageName) //cip...56
+    {
+      var url = HttpContext.Request.Host.Value; // Get the host URL from the current HTTP context
+      var ext = Path.GetExtension(imageName); // Get the file extension from the original image name
+      var fileName = $"{Guid.NewGuid()}{ext}"; // Generate a unique file name
+
+      var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers", fileName); // Combine the web root path, "images" folder, "bookcovers" folder, and the file name to get the full path
+      var bytes = Convert.FromBase64String(imageBase64);
+      await using var stream = new MemoryStream(bytes);
+      using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+      await stream.CopyToAsync(fileStream);
+      return $"https://{url}/images/bookcovers/{fileName}";
     }
   }
 }
