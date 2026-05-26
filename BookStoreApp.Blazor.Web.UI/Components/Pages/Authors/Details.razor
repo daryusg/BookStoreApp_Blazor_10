@@ -27,20 +27,26 @@
         </div>
     </fieldset>
     <br />
-    @if(Author.Books?.Any() == true) //cip...48 chatgpt "...can also avoid null checks entirely by initializing the collection in your DTO/model"
+    @if (Author.Books?.Any() == true) //cip...48 chatgpt "...can also avoid null checks entirely by initializing the collection in your DTO/model"
     //NOTE chatgpt: Author.Books?.Any() can produce: true, false, null
     {
-        @foreach (var book in @Author.Books)
-        {
-            <div class="card" style="width: 18rem;">
-                <img src="@book.Image" class="card-img-top" alt="@book.Title">
-                <div class="card-body">
-                    <h5 class="card-title">@book.Title - @book.Price?.ToString("C")</h5>
-                    <p class="card-text"></p>
-                    <a href="#" class="btn btn-primary">View Book</a>
+        @*cip...57 (here because vs won't let me add this comment to below line) *@
+        <div class="row">
+            @foreach (var book in @Author.Books)
+            {
+                @*cip...57 (here because vs won't let me add this comment to below line) *@
+                <div class="col-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src="@book.Image" class="card-img-top" alt="@book.Title">
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title - @book.Price?.ToString("C")</h5>
+                            <p class="card-text"></p>
+                            <a href="#" class="btn btn-primary">View Book</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     }
     else
     {
