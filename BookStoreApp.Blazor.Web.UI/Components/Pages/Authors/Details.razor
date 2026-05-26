@@ -1,8 +1,6 @@
 ﻿@page "/authors/details/{id:int}" //cip...48
 @inject IAuthorService authorService
 @inject NavigationManager navManager
-@using AutoMapper
-@inject IMapper _mapper
 
 <h3>Author Details</h3>
 <br />
@@ -37,11 +35,11 @@
                 @*cip...57 (here because vs won't let me add this comment to below line) *@
                 <div class="col-3">
                     <div class="card" style="width: 18rem;">
-                        <img src="@book.Image" class="card-img-top" alt="@book.Title">
+                        <img src="@book.Image" class="card-img-top" alt="@book.Title" style="width:160px; height:120px">
                         <div class="card-body">
                             <h5 class="card-title">@book.Title - @book.Price?.ToString("C")</h5>
                             <p class="card-text"></p>
-                            <a href="#" class="btn btn-primary">View Book</a>
+                            <a href="/books/details/@book.Id" class="btn btn-primary">View Book</a>
                         </div>
                     </div>
                 </div>
@@ -59,7 +57,7 @@
         <span class="bi bi-pencil-fill"></span>
         Edit Author
     </button>
-    <button @onclick="NavigateToAuthors" class="btn btn-secondary">
+    <button @onclick="NavigateToAuthors" class="btn btn-secondary" type="button">
         <span class="bi bi-rewind-fill"></span>
         Back to list
     </button>

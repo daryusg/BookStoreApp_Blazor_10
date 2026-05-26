@@ -19,7 +19,7 @@ public class BookCreateDto //cip...25
   public string Isbn { get; set; } = null!;
 
   [StringLength(250, MinimumLength = 10)]
-  public string Summary { get; set; }
+  public string? Summary { get; set; } //cip...58 made nullable otherwise api call treats as required
   public string? ImageData { get; set; } //cip...56. rename (note:regen nswag)
   public string? OriginalImageName { get; set; } //cip...56. (note:regen nswag)
 

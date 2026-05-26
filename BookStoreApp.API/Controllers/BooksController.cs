@@ -73,12 +73,27 @@ namespace BookStoreApp.API.Controllers
         return NotFound();
       }
 
+      //cip...58 if the bookDto contains new image data, i need to store the new image and delete the old one (if exists)
+      var picName = Path.GetFileName(book.Image); //store the file name from the old image URL for deletion after the new image is stored successfully
+      if (!string.IsNullOrEmpty(bookDto.ImageData) && !string.IsNullOrEmpty(bookDto.OriginalImageName))
+        bookDto.Image = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName); //store the new image and get the URL to save in the database
+
       _mapper.Map(bookDto, book); // Map the updated values from bookDto to the existing book entity
       _context.Entry(book).State = EntityState.Modified;
 
       try
       {
         await _context.SaveChangesAsync();
+
+        if (!string.IsNullOrEmpty(picName))
+        {
+          //new image was stored successfully SO deleting the old one
+          var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers", picName); //remove the old image
+          if (System.IO.File.Exists(oldImagePath))
+          {
+            System.IO.File.Delete(oldImagePath);
+          }
+        }
       }
       catch (DbUpdateConcurrencyException)
       {

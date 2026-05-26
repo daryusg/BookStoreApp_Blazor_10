@@ -1,7 +1,10 @@
-﻿@page "/books/create" //cip...55
+﻿@page "/books/update/{id:int}" //cip...58
 @inject IBookService bookService
 @inject IAuthorService authorService
 @inject NavigationManager navManager
+@using AutoMapper
+@inject IMapper _mapper
+
 @attribute [Authorize(Roles = Roles.Administrator)]
 
 @if (!string.IsNullOrWhiteSpace(UploadFileWarning))
@@ -11,9 +14,9 @@
     </div>
 }
 
-<h3>Create Book</h3>
+<h3>Edit Book</h3>
 <br />
-<EditForm Model="Book" OnValidSubmit="HandleCreateBookAsync" FormName="CreateBook">
+<EditForm Model="Book" OnValidSubmit="HandleUpdateBookAsync" FormName="UpdateBook">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -68,7 +71,7 @@
     </div>
     <button type="submit" class="btn btn-primary">
         <span class="bi bi-plus"></span>
-        Create Book
+        Update Book
     </button>
     <button type="button" @onclick="NavigateToBooks" class="btn btn-secondary">
         <span class="bi bi-rewind-fill"></span>
@@ -77,31 +80,34 @@
 </EditForm>
 
 @code {
-    private BookCreateDto Book { get; set; } = new()
-    {
-        Year = DateTime.Now.Year
-    };
+    [Parameter]
+    public int id { get; set; } //automatically binds to the route parameter
+
+    private BookUpdateDto Book { get; set; } = new();
+
     private List<AuthorReadOnlyDto> Authors { get; set; } = new();
     private string UploadFileWarning = string.Empty;
     private string img = string.Empty;
-    private string ErrorMessage = string.Empty; //cip...58 chatgpt: added to display error message if book creation fails.
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await authorService.GetAsync();
-        if (response.Success)
-            Authors = response.Data;
+        var responseAuthor = await authorService.GetAsync();
+        if (responseAuthor.Success)
+            Authors = responseAuthor.Data;
+
+        var responseBook = await bookService.GetAsync(id);
+        if (responseBook.Success)
+        {
+            Book = _mapper.Map<BookUpdateDto>(responseBook.Data); //map from BookReadOnlyDto to BookUpdateDto
+            img = Book.OriginalImageName; //set initial image preview
+        }
     }
 
-    private async Task HandleCreateBookAsync()
+    private async Task HandleUpdateBookAsync()
     {
-        var response = await bookService.CreateAsync(Book);
+        var response = await bookService.UpdateAsync(Book.Id, Book);
         if (response.Success)
             NavigateToBooks();
-        else
-        {
-            ErrorMessage = response.Message;
-        }
     }
 
     private void NavigateToBooks()
