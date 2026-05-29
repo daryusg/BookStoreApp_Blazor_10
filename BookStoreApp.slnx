@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="BookStoreApp.API/BookStoreApp.API.csproj" Id="754c3a95-9b95-4377-9582-790e3e6f7b84" />
   <Project Path="BookStoreApp.Blazor.Web.UI/BookStoreApp.Blazor.Web.UI.csproj" Id="bbbf1cff-27c0-4544-9488-a59945cfee1e" />
+  <Project Path="BookStoreApp.Blazor.WebAssembly.UI/BookStoreApp.Blazor.WebAssembly.UI.csproj" Id="0361d6b0-5e81-488f-8d63-40667d2abd36" />
 </Solution>
