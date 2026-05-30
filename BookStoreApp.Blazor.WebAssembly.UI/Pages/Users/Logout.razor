@@ -1,0 +1,13 @@
+﻿@page "/users/logout" //cip...41
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
+
+<h3>Logout</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await authService.LogoutAsync();
+        navManager.NavigateTo("/");
+    }
+}

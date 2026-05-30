@@ -1,0 +1,160 @@
+﻿@page "/books/update/{id:int}" //cip...58
+@inject IBookService bookService
+@inject IAuthorService authorService
+@inject NavigationManager navManager
+@using AutoMapper
+@inject IMapper _mapper
+
+@attribute [Authorize(Roles = Roles.Administrator)]
+
+@if (!string.IsNullOrWhiteSpace(UploadFileWarning))
+{
+    <div class="alert alert-danger">
+        @UploadFileWarning
+    </div>
+}
+
+<h3>Edit Book</h3>
+<br />
+<EditForm Model="Book" OnValidSubmit="HandleUpdateBookAsync" FormName="UpdateBook">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <InputText id="title" @bind-Value="Book.Title" class="form-control" />
+        <ValidationMessage For="@(() => Book.Title)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="isbn">ISBN</label>
+        <InputText id="isbn" @bind-Value="Book.Isbn" class="form-control" />
+        <ValidationMessage For="@(() => Book.Isbn)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="price">Price</label>
+        <InputNumber id="price" @bind-Value="Book.Price" class="form-control" />
+        <ValidationMessage For="@(() => Book.Price)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="year">Year</label>
+        <InputNumber id="year" @bind-Value="Book.Year" class="form-control" />
+        <ValidationMessage For="@(() => Book.Year)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="summary">Summary</label>
+        <InputTextArea id="summary" @bind-Value="Book.Summary" class="form-control" />
+        <ValidationMessage For="@(() => Book.Summary)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="authorId">Author</label>
+        <InputSelect id="authorId" @bind-Value="Book.AuthorId" class="form-select">
+            <option value="">Select an author</option>
+            @foreach (var author in Authors)
+            {
+                <option value="@author.Id">@author.FirstName @author.LastName</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Book.AuthorId)" />
+    </div>
+    <br />
+    <div class="form-group">
+        <label for="price">Book Cover Photo</label>
+        <div>
+            <InputFile OnChange="HandleFileSelectionAsync" />
+            <img src="@img" width="100" height="100" class="img-thumbnail">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">
+        <span class="bi bi-plus"></span>
+        Update Book
+    </button>
+    <button type="button" @onclick="NavigateToBooks" class="btn btn-secondary">
+        <span class="bi bi-rewind-fill"></span>
+        Back to list
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; } //automatically binds to the route parameter
+
+    private BookUpdateDto Book { get; set; } = new();
+
+    private List<AuthorReadOnlyDto> Authors { get; set; } = new();
+    private string UploadFileWarning = string.Empty;
+    private string img = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseAuthor = await authorService.GetAsync();
+        if (responseAuthor.Success)
+            Authors = responseAuthor.Data;
+
+        var responseBook = await bookService.GetAsync(id);
+        if (responseBook.Success)
+        {
+            Book = _mapper.Map<BookUpdateDto>(responseBook.Data); //map from BookReadOnlyDto to BookUpdateDto
+            img = Book.OriginalImageName; //set initial image preview
+        }
+    }
+
+    private async Task HandleUpdateBookAsync()
+    {
+        var response = await bookService.UpdateAsync(Book.Id, Book);
+        if (response.Success)
+            NavigateToBooks();
+    }
+
+    private void NavigateToBooks()
+    {
+        navManager.NavigateTo("/books/");
+    }
+
+    private async Task HandleFileSelectionAsync(InputFileChangeEventArgs args) //used chatgpt assistance due to preview image displaying inconsistently.
+    {
+        try
+        {
+            UploadFileWarning = string.Empty;
+            var file = args.File;
+            if (file == null)
+                return;
+
+            var ext = Path.GetExtension(file.Name).ToLowerInvariant();
+
+            var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            if (!permittedExtensions.Contains(ext))
+            {
+                UploadFileWarning = "Only JPG and PNG files are allowed.";
+                return;
+            }
+
+            var maxFileSize = 1024 * 1024 * 1; // 1MB limit
+            if (file.Size > maxFileSize)
+            {
+                UploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
+                return;
+            }
+
+            using var stream = file.OpenReadStream(maxAllowedSize: maxFileSize);
+            using var ms = new MemoryStream();
+
+            await stream.CopyToAsync(ms);
+
+            var bytes = ms.ToArray();
+            var base64String = Convert.ToBase64String(bytes);
+
+            Book.ImageData = base64String;
+            Book.OriginalImageName = file.Name;
+            img = $"data:{file.ContentType};base64,{base64String}";
+        }
+        catch (Exception ex)
+        {
+            UploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
+        }
+    }
+}

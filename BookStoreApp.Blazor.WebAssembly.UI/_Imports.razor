@@ -3,8 +3,15 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
-@using Microsoft.AspNetCore.Components.Web.Virtualization
+@*cip...62 chatgpt fix @using Microsoft.AspNetCore.Components.WebAssembly.Virtualization*@
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
 @using BookStoreApp.Blazor.WebAssembly.UI
 @using BookStoreApp.Blazor.WebAssembly.UI.Layout
+
+@using BookStoreApp.Blazor.WebAssembly.UI.Services.Base //cip...40
+@using BookStoreApp.Blazor.WebAssembly.UI.Services.Authentication //cip...40
+@using Microsoft.AspNetCore.Components.Authorization //cip...41
+@using BookStoreApp.Blazor.WebAssembly.UI.Services //cip...45
+@using BookStoreApp.Blazor.WebAssembly.UI.Static //cip...50
+@using Microsoft.AspNetCore.Authorization //cip...50

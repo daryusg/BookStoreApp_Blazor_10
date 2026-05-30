@@ -1,0 +1,56 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BookStoreApp.Blazor.WebAssembly.UI</a>
+    </div>
+</div>
+
+<spannput type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="nav flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        <AuthorizeView>
+            @*cip...41*@
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link">
+                        <span class="bi bi-person-fill"></span> @context.User?.Identity?.Name
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="users/logout">
+                        <span class="bi bi-box-arrow-left"></span> Logout
+                    </NavLink>
+                </div>
+                <hr />
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="authors/">
+                        <span class="bi bi-people-fill"></span> Authors
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="books/">
+                        <span class="bi bi-book"></span> Books
+                    </NavLink>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="users/register">
+                        <span class="bi bi-person-plus-fill"></span> Register
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="users/login">
+                        <span class="bi bi-box-arrow-in-right"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </nav>
+</div>
+

@@ -1,0 +1,79 @@
+﻿@page "/books/details/{id:int}" //cip...57
+@inject IBookService bookService
+@inject NavigationManager navManager
+
+<h3>Book Details</h3>
+<br />
+<EditForm Model="Book" FormName="BookDetails">
+    <fieldset disabled>
+        <div class="form-group">
+            <label for="price">Book Cover Photo</label>
+            <div>
+                <img src="@Book.Image" width="160" height="120" class="img-thumbnail">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <InputText id="title" @bind-Value="Book.Title" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="author">Author</label>
+            <InputText id="author" @bind-Value="Book.AuthorName" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="isbn">ISBN</label>
+            <InputText id="isbn" @bind-Value="Book.Isbn" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="price">Price</label>
+            <InputNumber id="price" @bind-Value="Book.Price" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="year">Year</label>
+            <InputNumber id="year" @bind-Value="Book.Year" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="summary">Summary</label>
+            <InputTextArea id="summary" @bind-Value="Book.Summary" class="form-control" />
+        </div>
+    </fieldset>
+    <br />
+    <button @onclick="NavigateToEdit" class="btn btn-warning">
+        <span class="bi bi-pencil-fill"></span>
+        Edit Book
+    </button>
+    <button type="button" @onclick="NavigateToBooks" class="btn btn-secondary">
+        <span class="bi bi-rewind-fill"></span>
+        Back to list
+    </button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; } //automatically binds to the route parameter
+
+    private BookDetailsDto Book { get; set; } = new();
+
+    //when the component loads, get the book details and populate the form
+    override protected async Task OnInitializedAsync()
+    {
+        var response = await bookService.GetAsync(id);
+        if (response.Success)
+            Book = response.Data;
+    }
+
+    private void NavigateToBooks()
+    {
+        navManager.NavigateTo("/books/");
+    }
+
+    private void NavigateToEdit()
+    {
+        navManager.NavigateTo($"/books/update/{id}");
+    }
+}
