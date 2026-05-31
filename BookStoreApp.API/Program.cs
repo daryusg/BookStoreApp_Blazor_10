@@ -1,5 +1,6 @@
 using BookStoreApp.API.Configurations;
 using BookStoreApp.API.Data;
+using BookStoreApp.API.Repositories;
 using BookStoreApp.API.Static;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,9 @@ builder.Services.AddDbContext<BookStoreDbContext>(options =>
 builder.Services.AddIdentityCore<ApiUser>() //cip...29
   .AddRoles<IdentityRole>()
   .AddEntityFrameworkStores<BookStoreDbContext>(); //cip...28
+
+builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>(); //cip...65
+builder.Services.AddScoped<IBooksRepository, BooksRepository>(); //cip...65
 
 //builder.Services.AddAutoMapper(typeof(MapperConfig)); //deprecated in favor of the following line, which is more concise and achieves the same result.
 builder.Services.AddAutoMapper(cfg => //cip...12 + chatgpt

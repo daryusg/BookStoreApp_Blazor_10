@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Azure;
+//using AutoMapper.QueryableExtensions; cip...65 commented
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Models.Author;
+using BookStoreApp.API.Repositories;
 using BookStoreApp.API.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +15,17 @@ namespace BookStoreApp.API.Controllers
   [Authorize]
   public class AuthorsController : ControllerBase //cip...19
   {
-    private readonly BookStoreDbContext _context;
+    //private readonly BookStoreDbContext _context;
+    private readonly IAuthorsRepository _authorsRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<AuthorsController> _logger;
 
-    //public AuthorsController(BookStoreDbContext context, IMapper mapper)
-    public AuthorsController(BookStoreDbContext context, IMapper mapper, ILogger<AuthorsController> logger) //cip...20, 21
+    //public AuthorsController(BookStoreDbContext _context, IMapper _mapper)
+    //public AuthorsController(BookStoreDbContext _context, IMapper _mapper, ILogger<AuthorsController> logger) //cip...20, 21
+    public AuthorsController(IAuthorsRepository authorsRepository, IMapper mapper, ILogger<AuthorsController> logger) //cip...65
     {
-      _context = context;
+      _authorsRepository = authorsRepository;
+      //_context = _context;
       this._mapper = mapper;
       this._logger = logger;
     }
@@ -36,7 +39,8 @@ namespace BookStoreApp.API.Controllers
         _logger.LogInformation($"Request to {nameof(GetAuthors)}"); //cip...21
         //throw new Exception("Test exception in GetAuthors"); //cip...21 *** REMOVE THIS LINE AFTER TESTING ***
 
-        var authors = await _context.Authors.ToListAsync();
+        //var authors = await _context.Authors.ToListAsync();
+        var authors = await _authorsRepository.GetAsync();
         var authorsDto = _mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
         return Ok(authorsDto);
       }
@@ -55,10 +59,11 @@ namespace BookStoreApp.API.Controllers
       try //cip...21
       {
         //var author = await _context.Authors.FindAsync(id);
-        var authorDto = await _context.Authors
-          .Include(a => a.Books) //cip...48 available because of public virtual ICollection<Book> Books { get; set; } = new List<Book>(); in BookStoreApp.API.Data.Author class
-          .ProjectTo<AuthorDetailsDto>(_mapper.ConfigurationProvider) //cip...48
-          .FirstOrDefaultAsync(a => a.Id == id);
+        //var authorDto = await _context.Authors
+        //  .Include(a => a.Books) //cip...48 available because of public virtual ICollection<Book> Books { get; set; } = new List<Book>(); in BookStoreApp.API.Data.Author class
+        //  .ProjectTo<AuthorDetailsDto>(_mapper.ConfigurationProvider) //cip...48
+        //  .FirstOrDefaultAsync(a => a.Id == id);
+        var authorDto = await _authorsRepository.GetAuthorDetailsAsync(id); //cip...65
 
         if (authorDto == null)
         {
@@ -89,7 +94,8 @@ namespace BookStoreApp.API.Controllers
           return BadRequest();
         }
 
-        var author = await _context.Authors.FindAsync(id);
+        //var author = await _context.Authors.FindAsync(id);
+        var author = await _authorsRepository.GetAsync(id); //cip...65
         if (author == null)
         {
           _logger.LogWarning($"Author with id {id} not found in {nameof(PutAuthor)}"); //cip...21
@@ -97,11 +103,12 @@ namespace BookStoreApp.API.Controllers
         }
 
         _mapper.Map(authorDto, author); //cip...20
-        _context.Entry(author).State = EntityState.Modified;
+        //_context.Entry(author).State = EntityState.Modified;
 
         try
         {
-          await _context.SaveChangesAsync();
+          //await _context.SaveChangesAsync();
+          await _authorsRepository.UpdateAsync(author); //cip...65
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -143,8 +150,9 @@ namespace BookStoreApp.API.Controllers
         */
         //method2 use automapper
         var author = _mapper.Map<Author>(authorDto); //cip...20
-        await _context.Authors.AddAsync(author); //cip...20
-        await _context.SaveChangesAsync();
+        //await _context.Authors.AddAsync(author); //cip...20
+        //await _context.SaveChangesAsync();
+        await _authorsRepository.AddAsync(author); //cip...65
 
         return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);  //cip...20
       }
@@ -163,15 +171,17 @@ namespace BookStoreApp.API.Controllers
     {
       try //cip...21
       {
-        var author = await _context.Authors.FindAsync(id);
+        //var author = await _context.Authors.FindAsync(id);
+        var author = await _authorsRepository.GetAsync(id);
         if (author == null)
         {
           _logger.LogWarning($"Author with id {id} not found in {nameof(DeleteAuthor)}"); //cip...21
           return NotFound();
         }
 
-        _context.Authors.Remove(author);
-        await _context.SaveChangesAsync();
+        //_context.Authors.Remove(author);
+        //await _context.SaveChangesAsync();
+        await _authorsRepository.DeleteAsync(id); //cip...65
 
         return NoContent();
       }
@@ -184,7 +194,8 @@ namespace BookStoreApp.API.Controllers
 
     private async Task<bool> AuthorExistsAsync(int id)
     {
-      return await _context.Authors.AnyAsync(e => e.Id == id);
+      //return await _context.Authors.AnyAsync(e => e.Id == id);
+      return await _authorsRepository.Exists(id); //cip...65
     }
   }
 }

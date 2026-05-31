@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
+//using AutoMapper.QueryableExtensions; cip...65 commented
 using BookStoreApp.API.Data;
 using BookStoreApp.API.Models.Book;
+using BookStoreApp.API.Repositories;
 using BookStoreApp.API.Static;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,17 @@ namespace BookStoreApp.API.Controllers
   [Authorize]
   public class BooksController : ControllerBase //cip...24
   {
-    private readonly BookStoreDbContext _context;
+    private readonly IBooksRepository _booksRepository;
+
+    //private readonly BookStoreDbContext _context;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _webHostEnvironment; //cip...56
 
-    public BooksController(BookStoreDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+    //public BooksController(BookStoreDbContext _context, IMapper _mapper, IWebHostEnvironment webHostEnvironment)
+    public BooksController(IBooksRepository booksRepository, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
-      _context = context;
+      this._booksRepository = booksRepository;
+      //_context = _context;
       this._mapper = mapper;
       this._webHostEnvironment = webHostEnvironment;
     }
@@ -29,12 +34,13 @@ namespace BookStoreApp.API.Controllers
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BookReadOnlyDto>>> GetBooks() //cip...25
     {
-      //var books = await _context.Books
-      var booksDto = await _context.Books
-        .Include(b => b.Author) // Include = LEFT (OUTER?) JOIN
-        .ProjectTo<BookReadOnlyDto>(_mapper.ConfigurationProvider) //use AutoMapper to project directly to BookReadOnlyDto
-        .ToListAsync();
+      //var books = await _authorsRepository.Books
+      //var booksDto = await _context.Books
+      //  .Include(b => b.Author) // Include = LEFT (OUTER?) JOIN
+      //  .ProjectTo<BookReadOnlyDto>(_mapper.ConfigurationProvider) //use AutoMapper to project directly to BookReadOnlyDto
+      //  .ToListAsync();
       //var booksDto = _mapper.Map<IEnumerable<BookReadOnlyDto>>(books);
+      var booksDto = await _booksRepository.GetBooksReadOnlyAsync(); //cip...24
       return Ok(booksDto);
     }
 
@@ -42,10 +48,11 @@ namespace BookStoreApp.API.Controllers
     [HttpGet("{id}")]
     public async Task<ActionResult<BookDetailsDto>> GetBook(int id)
     {
-      var bookDto = await _context.Books
-        .Include(b => b.Author)
-        .ProjectTo<BookDetailsDto>(_mapper.ConfigurationProvider)
-        .FirstOrDefaultAsync(q => q.Id == id);
+      //var bookDto = await _context.Books
+      //  .Include(b => b.Author)
+      //  .ProjectTo<BookDetailsDto>(_mapper.ConfigurationProvider)
+      //  .FirstOrDefaultAsync(q => q.Id == id);
+      var bookDto = await _booksRepository.GetBookDetailsAsync(id); //cip...65
 
       if (bookDto == null)
       {
@@ -67,7 +74,8 @@ namespace BookStoreApp.API.Controllers
         return BadRequest();
       }
 
-      var book = await _context.Books.FindAsync(id);
+      //var book = await _context.Books.FindAsync(id);
+      var book = await _booksRepository.GetAsync(id); //cip...65
       if (book == null)
       {
         return NotFound();
@@ -79,11 +87,12 @@ namespace BookStoreApp.API.Controllers
         bookDto.Image = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName); //store the new image and get the URL to save in the database
 
       _mapper.Map(bookDto, book); // Map the updated values from bookDto to the existing book entity
-      _context.Entry(book).State = EntityState.Modified;
+      //_context.Entry(book).State = EntityState.Modified;
 
       try
       {
-        await _context.SaveChangesAsync();
+        //await _context.SaveChangesAsync();
+        await _booksRepository.UpdateAsync(book); //cip...65
 
         if (!string.IsNullOrEmpty(picName))
         {
@@ -124,9 +133,10 @@ namespace BookStoreApp.API.Controllers
         var imageUrl = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName);
         book.Image = imageUrl;
       }
-      _context.Books.Add(book);
+      //_context.Books.Add(book);
 
-      await _context.SaveChangesAsync();
+      //await _context.SaveChangesAsync();
+      await _booksRepository.AddAsync(book); //cip...65
 
       return CreatedAtAction("GetBook", new { id = book.Id }, book);
     }
@@ -137,26 +147,29 @@ namespace BookStoreApp.API.Controllers
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteBook(int id)
     {
-      var book = await _context.Books.FindAsync(id);
+      //var book = await _context.Books.FindAsync(id);
+      var book = await _booksRepository.GetAsync(id); //cip...65
       if (book == null)
       {
         return NotFound();
       }
 
-      _context.Books.Remove(book);
-      await _context.SaveChangesAsync();
+      //_context.Books.Remove(book);
+      //await _context.SaveChangesAsync();
+      await _booksRepository.DeleteAsync(id); //cip...65
 
       return NoContent();
     }
 
     private async Task<bool> BookExistsAsync(int id) //cip...25
     {
-      return await _context.Books.AnyAsync(e => e.Id == id);
+      //return await _context.Books.AnyAsync(e => e.Id == id);
+      return await _booksRepository.Exists(id);
     }
 
     private async Task<string> CreateFile(string imageBase64, string imageName) //cip...56
     {
-      var url = HttpContext.Request.Host.Value; // Get the host URL from the current HTTP context
+      var url = HttpContext.Request.Host.Value; // Get the host URL from the current HTTP _context
       var ext = Path.GetExtension(imageName); // Get the file extension from the original image name
       var fileName = $"{Guid.NewGuid()}{ext}"; // Generate a unique file name
 
