@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 //using AutoMapper.QueryableExtensions; cip...65 commented
 using BookStoreApp.API.Data;
+using BookStoreApp.API.Models;
 using BookStoreApp.API.Models.Author;
 using BookStoreApp.API.Repositories;
 using BookStoreApp.API.Static;
@@ -16,7 +17,7 @@ namespace BookStoreApp.API.Controllers
   public class AuthorsController : ControllerBase //cip...19
   {
     //private readonly BookStoreDbContext _context;
-    private readonly IAuthorsRepository _authorsRepository;
+    private readonly IAuthorsRepository _authorsRepository; //cip...65
     private readonly IMapper _mapper;
     private readonly ILogger<AuthorsController> _logger;
 
@@ -31,7 +32,7 @@ namespace BookStoreApp.API.Controllers
     }
 
     // GET: api/Authors
-    [HttpGet]
+    [HttpGet("GetAll")] //cip...66 to avoid route conflict with the above GetAuthors([FromQuery] QueryParameters queryParams)
     public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> GetAuthors() //cip...20
     {
       try //cip...21
@@ -40,11 +41,28 @@ namespace BookStoreApp.API.Controllers
         //throw new Exception("Test exception in GetAuthors"); //cip...21 *** REMOVE THIS LINE AFTER TESTING ***
 
         //var authors = await _context.Authors.ToListAsync();
-        var authors = await _authorsRepository.GetAsync();
+        var authors = await _authorsRepository.GetAsync(); //cip...65
         var authorsDto = _mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
         return Ok(authorsDto);
       }
       catch (Exception ex) //cip...21
+      {
+        _logger.LogError(ex, $"An error occurred in {nameof(GetAuthors)}");
+        return StatusCode(500, Messages.Error500Message); // Return a 500 Internal Server Error response
+      }
+    }
+
+    // GET: api/Authors/?StartIndex=0&PageSize=10
+    [HttpGet]
+    public async Task<ActionResult<VirtualiseResponse<AuthorReadOnlyDto>>> GetAuthors([FromQuery] QueryParameters queryParams) //cip...66
+    {
+      try
+      {
+        _logger.LogInformation($"Request to {nameof(GetAuthors)} StartIndex: {queryParams.StartIndex}, PageSize: {queryParams.PageSize}");
+        var authorsDto = await _authorsRepository.GetAsync<AuthorReadOnlyDto>(queryParams);
+        return Ok(authorsDto);
+      }
+      catch (Exception ex)
       {
         _logger.LogError(ex, $"An error occurred in {nameof(GetAuthors)}");
         return StatusCode(500, Messages.Error500Message); // Return a 500 Internal Server Error response
@@ -172,7 +190,7 @@ namespace BookStoreApp.API.Controllers
       try //cip...21
       {
         //var author = await _context.Authors.FindAsync(id);
-        var author = await _authorsRepository.GetAsync(id);
+        var author = await _authorsRepository.GetAsync(id); //cip...65
         if (author == null)
         {
           _logger.LogWarning($"Author with id {id} not found in {nameof(DeleteAuthor)}"); //cip...21

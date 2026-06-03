@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using BookStoreApp.Blazor.WebAssembly.UI.Models;
 using BookStoreApp.Blazor.WebAssembly.UI.Services.Base;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -54,7 +55,8 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     try
     {
       await GetBearerTokenAsync();
-      var data = await _client.AuthorsGETAsync(id);
+      //var data = await _client.AuthorsGETAsync(id);
+      var data = await _client.AuthorsGET2Async(id); //cip...66
       response = new Response<AuthorDetailsDto>
       {
         Data = data,
@@ -75,7 +77,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     try
     {
       await GetBearerTokenAsync();
-      var data = await _client.AuthorsAllAsync();
+      var data = await _client.GetAllAsync();
       response = new Response<List<AuthorReadOnlyDto>>
       {
         Data = data.ToList(),
@@ -85,6 +87,33 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     catch (ApiException apiException)
     {
       response = ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
+    }
+
+    return response;
+  }
+
+  //public async Task<Response<List<AuthorReadOnlyDto>>> GetAsync()
+  public async Task<Response<AuthorReadOnlyDtoVirtualiseResponse>> GetAsync(QueryParameters queryParams) //cip...66
+  {
+    //Response<List<AuthorReadOnlyDto>> response;
+    Response<AuthorReadOnlyDtoVirtualiseResponse> response; //cip...66
+    try
+    {
+      await GetBearerTokenAsync();
+      //var data = await _client.AuthorsAllAsync();
+      var data = await _client.AuthorsGETAsync(queryParams.StartIndex, queryParams.PageSize); //cip...66
+      //response = new Response<List<AuthorReadOnlyDto>>
+      response = new Response<AuthorReadOnlyDtoVirtualiseResponse> //cip...66
+      {
+        //Data = data.ToList(),
+        Data = data, //cip...66
+        Success = true
+      };
+    }
+    catch (ApiException apiException)
+    {
+      //response = ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
+      response = ConvertApiExceptions<AuthorReadOnlyDtoVirtualiseResponse>(apiException); //cip...66
     }
 
     return response;

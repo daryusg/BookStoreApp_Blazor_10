@@ -56,9 +56,9 @@ builder.Services.AddAuthentication(options => //cip...32
   {
     ValidateIssuerSigningKey = true,
     ValidateIssuer = true,
-    ValidateAudience=true,
+    ValidateAudience = true,
     ValidateLifetime = true,
-    ClockSkew =TimeSpan.Zero,
+    ClockSkew = TimeSpan.Zero,
     ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
     ValidAudience = builder.Configuration["JwtSettings:Audience"],
     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
@@ -75,13 +75,18 @@ using (var scope = app.Services.CreateScope())
   var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
   await SeedRolesAndUsers.SeedAsync(userManager, roleManager);
+  var services = scope.ServiceProvider;
+
+  //seed the authors
+  var context = services.GetRequiredService<BookStoreDbContext>();
+  await SeedRolesAndUsers.SeedAuthorsAsync(context);
 }
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
