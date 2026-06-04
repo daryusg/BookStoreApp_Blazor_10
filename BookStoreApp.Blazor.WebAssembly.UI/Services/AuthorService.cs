@@ -27,7 +27,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;
@@ -43,7 +43,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;
@@ -65,7 +65,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<AuthorDetailsDto>(apiException);
+      response = await ConvertApiExceptions<AuthorDetailsDto>(apiException);
     }
 
     return response;
@@ -86,7 +86,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
+      response = await ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
     }
 
     return response;
@@ -113,7 +113,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     catch (ApiException apiException)
     {
       //response = ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
-      response = ConvertApiExceptions<AuthorReadOnlyDtoVirtualiseResponse>(apiException); //cip...66
+      response = await ConvertApiExceptions<AuthorReadOnlyDtoVirtualiseResponse>(apiException); //cip...66
     }
 
     return response;
@@ -129,7 +129,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;

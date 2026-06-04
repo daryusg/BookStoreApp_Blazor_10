@@ -1,4 +1,4 @@
-//cip...62 chatgpt (BC55+) assisted rehash of the BookStoreApp.Blazor.Web.UI.Program.cs file.
+//cip...62 chatgpt (BC55+) assisted rehash of the BookStoreApp.Blazor.WebAssembly.UI.Program.cs file.
 using Blazored.LocalStorage;
 using BookStoreApp.Blazor.WebAssembly.UI;
 using BookStoreApp.Blazor.WebAssembly.UI.Configurations;

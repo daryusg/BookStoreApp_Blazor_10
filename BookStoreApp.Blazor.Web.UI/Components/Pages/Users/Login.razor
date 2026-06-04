@@ -1,8 +1,11 @@
 ﻿@page "/users/login" //cip...40
-@using BookStoreApp.Blazor.Web.UI.Services.Authentication
-@inject IAuthenticationService authService;
-@inject NavigationManager navManager; //cip...41
 
+@if (!string.IsNullOrEmpty(message))
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@message</p>
+    </div>
+}
 <h3>Login</h3>
 
 <div>
@@ -25,23 +28,3 @@
     </EditForm>
 
 </div>
-@code {
-    LoginUserDto LoginModel { get; set; } = new();
-    string message = string.Empty;
-
-    public async Task HandleLogin()
-    {
-        try
-        {
-            var response = await authService.AuthenticateAsync(LoginModel);
-            if (response)
-                navManager.NavigateTo("/");
-            else
-                message = $"Login failed: Please try again";
-        }
-        catch (ApiException ex)
-        {
-            message = ex.Response;
-        }
-    }
-}

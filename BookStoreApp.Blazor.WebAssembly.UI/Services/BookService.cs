@@ -25,7 +25,7 @@ public class BookService : BaseHttpService, IBookService //cip...53
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;
@@ -41,7 +41,7 @@ public class BookService : BaseHttpService, IBookService //cip...53
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;
@@ -62,7 +62,7 @@ public class BookService : BaseHttpService, IBookService //cip...53
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<BookDetailsDto>(apiException);
+      response = await ConvertApiExceptions<BookDetailsDto>(apiException);
     }
 
     return response;
@@ -83,7 +83,7 @@ public class BookService : BaseHttpService, IBookService //cip...53
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<List<BookReadOnlyDto>>(apiException);
+      response = await ConvertApiExceptions<List<BookReadOnlyDto>>(apiException);
     }
 
     return response;
@@ -99,7 +99,7 @@ public class BookService : BaseHttpService, IBookService //cip...53
     }
     catch (ApiException apiException)
     {
-      response = ConvertApiExceptions<int>(apiException);
+      response = await ConvertApiExceptions<int>(apiException);
     }
 
     return response;
