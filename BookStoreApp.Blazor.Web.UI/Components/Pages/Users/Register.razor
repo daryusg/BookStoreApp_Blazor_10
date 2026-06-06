@@ -1,5 +1,4 @@
 ﻿@page "/users/register" //cip...39
-@rendermode InteractiveServer
 @inject IClient httpClient;
 @inject NavigationManager navManager;
 <h3>Register New Account</h3>
@@ -58,7 +57,7 @@
             //NOTE: i've appended the attribute [ProducesResponseType(StatusCodes.Status202Accepted)] to RegisterAsync so that nswag properly handles the response and doesn't throw an exception when it receives a 202 status code.
             //This is because the RegisterAsync method returns a 202 status code when the registration is successful, but nswag expects a 200 status code by default.
             await httpClient.RegisterAsync(RegistrationModel);
-            navManager.NavigateTo("/users/LoginUserDto");
+            navManager.NavigateTo("/users/login");
         }
         catch (ApiException ex)
         {
