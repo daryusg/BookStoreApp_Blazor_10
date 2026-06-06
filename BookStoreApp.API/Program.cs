@@ -92,10 +92,10 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
 }
-
+app.UseSwagger(); //cip...71 troubleshooting deployment connection issues 
+app.UseSwaggerUI(); //cip...71 troubleshooting deployment connection issues 
+`
 app.UseHttpsRedirection();
 app.UseStaticFiles(); //cip...56. used to store images locally.
 
@@ -105,5 +105,7 @@ app.UseAuthentication(); //cip...32
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/ping", () => "pong"); //cip...71 troubleshooting deployment connection issues (https://bookstoreappkevapi.azurewebsites.net/ping should return "pong")
 
 app.Run();
