@@ -95,7 +95,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseSwagger(); //cip...71 troubleshooting deployment connection issues 
 app.UseSwaggerUI(); //cip...71 troubleshooting deployment connection issues 
-`
+
 app.UseHttpsRedirection();
 app.UseStaticFiles(); //cip...56. used to store images locally.
 
