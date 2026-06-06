@@ -17,12 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnection");
 
 Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}"); //cip...71 troubleshooting deployment connection issues
-Console.WriteLine($"Connection string (before AddDbContext): {Misc.GetRedactedConnectionString(connString)}"); //cip...71 troubleshooting deployment connection issues
+Console.WriteLine($"Connection string: {Misc.GetRedactedConnectionString(connString)}"); //cip...71 troubleshooting deployment connection issues
 
 builder.Services.AddDbContext<BookStoreDbContext>(options =>
     options.UseSqlServer(connString)); //cip...12
-
-Console.WriteLine($"Connection string (after AddDbContext): {Misc.GetRedactedConnectionString(connString)}"); //cip...71 troubleshooting deployment connection issues
 
 builder.Services.AddIdentityCore<ApiUser>() //cip...29
   .AddRoles<IdentityRole>()
