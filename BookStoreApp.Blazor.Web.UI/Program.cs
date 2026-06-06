@@ -15,15 +15,15 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazoredLocalStorage(); //cip...40
 builder.Services.AddHttpClient<IClient, Client>(client =>
 {
-  client.BaseAddress = new Uri("https://localhost:7244");
-}); //cip...38
+    client.BaseAddress = new Uri(builder.Configuration["BaseAddress"]);
+}); //cip...38,72
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>(); //cip...40
 builder.Services.AddScoped<IAuthorService, AuthorService>(); //cip...45
 builder.Services.AddScoped<IBookService, BookService>(); //cip...53
 
 builder.Services.AddAutoMapper(cfg => //cip...47 (12 + chatgpt)
 {
-  cfg.AddProfile<MapperConfig>();
+    cfg.AddProfile<MapperConfig>();
 }, typeof(Program));
 
 builder.Services.AddScoped<ApiAuthenticationStateProvider>(); //cip...41
@@ -38,20 +38,20 @@ builder.Services
     .AddAuthentication("Cookies")
     .AddCookie("Cookies", options =>
     {
-      options.LoginPath = "/users/login";
+        options.LoginPath = "/users/login";
 
-      // prevent redirect loops
-      options.Events.OnRedirectToLogin = context =>
-      {
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-      };
+        // prevent redirect loops
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        };
 
-      options.Events.OnRedirectToAccessDenied = context =>
-      {
-        context.Response.StatusCode = 403;
-        return Task.CompletedTask;
-      };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode = 403;
+            return Task.CompletedTask;
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -63,9 +63,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-  app.UseExceptionHandler("/Error", createScopeForErrors: true);
-  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-  app.UseHsts();
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
