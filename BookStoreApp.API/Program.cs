@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
-
+using Microsoft.Data.SqlClient; //cip...71 troubleshooting deployment connection issues
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +18,13 @@ var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnec
 builder.Services.AddDbContext<BookStoreDbContext>(options =>
     options.UseSqlServer(connString)); //cip...12
 
-Console.WriteLine($"Connection string: {connString}"); //cip...71 troubleshooting deployment issues
+var connBuilder = new SqlConnectionStringBuilder(connString)
+{
+    UserID = "###",
+    Password = "###"
+};
+var connString_dummy = connBuilder.ConnectionString; //cip...71 troubleshooting deployment connection issues
+Console.WriteLine($"Connection string: {connString_dummy}"); //cip...71 troubleshooting deployment connection issues
 
 builder.Services.AddIdentityCore<ApiUser>() //cip...29
   .AddRoles<IdentityRole>()
