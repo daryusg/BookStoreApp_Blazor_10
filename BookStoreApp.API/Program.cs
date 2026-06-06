@@ -91,7 +91,7 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
 }
-app.UseSwagger(); //cip...71 troubleshooting deployment connection issues 
+app.UseSwagger(); //cip...71 troubleshooting deployment connection issues https://bookstoreappkevapi.azurewebsites.net/swagger/index.html
 app.UseSwaggerUI(); //cip...71 troubleshooting deployment connection issues 
 
 app.UseHttpsRedirection();
