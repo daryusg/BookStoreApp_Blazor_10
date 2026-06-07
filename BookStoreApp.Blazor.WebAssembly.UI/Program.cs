@@ -21,7 +21,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 var baseAddress = "https://localhost:7244"; //cip...73
 if (builder.HostEnvironment.IsProduction())
 {
-    baseAddress = "https://bookstoreappapi.azurewebsites.net";
+    baseAddress = "https://bookstoreappkevapi.azurewebsites.net";
 }
 builder.Services.AddScoped(sp => new HttpClient
 {
