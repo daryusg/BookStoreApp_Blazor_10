@@ -35,11 +35,20 @@
     private Virtualize<AuthorReadOnlyDto>? virtualizeComponent; @*Reference to the Virtualize component. Used so we can call RefreshDataAsync() after deleting an author*@
     private List<AuthorReadOnlyDto> authors = []; @*Stores the currently loaded authors. Needed because Virtualize only provides the visible items. We use this list when looking up an author before deletion*@
 
+    protected override Task OnInitializedAsync() //20260808 chatgpt added to test logstream
+    {
+        Console.WriteLine("=== AUTHORS PAGE LOADED ===");
+        logger.LogInformation("=== AUTHORS PAGE LOADED ===");
+        return Task.CompletedTask;
+    }
+
     @*Called automatically by Virtualize whenever more data is needed.
         request.StartIndex: The first row Virtualize wants.
         request.Count: How many rows Virtualize wants*@
     private async ValueTask<ItemsProviderResult<AuthorReadOnlyDto>> LoadAuthors(ItemsProviderRequest request)
     {
+        logger.LogInformation("LoadAuthors called. StartIndex={StartIndex}, Count={Count}", request.StartIndex, request.Count); //20260808 chatgpt added logging for debugging azure only showing 106 items
+        
         @*Call the API/service to retrieve a "page" of authors*@
         var response = await authorService.GetAsync(
             new QueryParameters
