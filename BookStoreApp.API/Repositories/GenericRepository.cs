@@ -49,7 +49,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class //cip.
     }
 
     //20260608 chatgpt potential fix for azure only showing 106 items in azure
-    //public async Task<VirtualiseResponse<TResult>> GetAsync<TResult>(QueryParameters queryParams) where TResult : class //cip...66
+    //public async Task<PagedResult<TResult>> GetAsync<TResult>(QueryParameters queryParams) where TResult : class //cip...66
     //{
     //    var totalCount = await _context.Set<T>().CountAsync();
     //    var items = await _context.Set<T>()
@@ -58,30 +58,53 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class //cip.
     //      .ProjectTo<TResult>(_mapper.ConfigurationProvider)
     //      .ToListAsync();
 
-    //    return new VirtualiseResponse<TResult> { TotalCount = totalCount, Items = items };
+    //    return new PagedResult<TResult> { TotalCount = totalCount, Items = items };
     //}
 
-    public async Task<VirtualiseResponse<TResult>> GetAsync<TResult>(QueryParameters queryParams) //20260608 potential fix for azure only showing 106 items in azure
+    public async Task<PagedResult<TResult>> GetAsync<TResult>(QueryParameters queryParams) //20260608 chatgpt potential fix for azure only showing 106 items in azure
         where TResult : class
     {
-        var query = _context.Set<T>().AsQueryable();
+        var baseQuery = BuildBaseQuery();
 
-        // ALWAYS ensure deterministic ordering
-        query = query.OrderBy(x => EF.Property<object>(x, "Id"));
+        var totalSize = await baseQuery.CountAsync();
 
-        var totalCount = await query.CountAsync();
-
-        var items = await query
+        var items = await ApplyOrdering(baseQuery, queryParams)
             .Skip(queryParams.StartIndex)
             .Take(queryParams.PageSize)
             .ProjectTo<TResult>(_mapper.ConfigurationProvider)
             .ToListAsync();
 
-        return new VirtualiseResponse<TResult>
+        return new PagedResult<TResult>
         {
-            TotalCount = totalCount,
+            TotalCount = totalSize,
             Items = items
         };
+    }
+
+    private IQueryable<T> BuildBaseQuery() //20260608 chatgpt potential fix for azure only showing 106 items in azure
+    {
+        var query = _context.Set<T>().AsQueryable();
+
+        // Example: soft delete support (if you have it)
+        // query = query.Where(x => !x.IsDeleted);
+
+        // Example: search hook (optional)
+        // query = ApplySearch(query, queryParams.Search);
+
+        return query;
+    }
+
+    private static IQueryable<T> ApplyOrdering(IQueryable<T> query, QueryParameters p) //20260608 chatgpt potential fix for azure only showing 106 items in azure
+    {
+        if (!string.IsNullOrWhiteSpace(p.SortBy))
+        {
+            return p.SortDesc
+                ? query.OrderByDescending(e => EF.Property<object>(e, p.SortBy))
+                : query.OrderBy(e => EF.Property<object>(e, p.SortBy));
+        }
+
+        // fallback deterministic order
+        return query.OrderBy(e => EF.Property<object>(e, "Id"));
     }
 
     public async Task<bool> UpdateAsync(T entity)

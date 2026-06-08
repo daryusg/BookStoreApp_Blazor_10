@@ -54,7 +54,7 @@ namespace BookStoreApp.API.Controllers
 
     // GET: api/Authors/?StartIndex=0&PageSize=10
     [HttpGet]
-    public async Task<ActionResult<VirtualiseResponse<AuthorReadOnlyDto>>> GetAuthors([FromQuery] QueryParameters queryParams) //cip...66
+    public async Task<ActionResult<PagedResult<AuthorReadOnlyDto>>> GetAuthors([FromQuery] QueryParameters queryParams) //cip...66
     {
       try
       {

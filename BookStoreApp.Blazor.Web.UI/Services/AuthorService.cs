@@ -93,17 +93,17 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
   }
 
   //public async Task<Response<List<AuthorReadOnlyDto>>> GetAsync()
-  public async Task<Response<AuthorReadOnlyDtoVirtualiseResponse>> GetAsync(QueryParameters queryParams) //cip...66
+  public async Task<Response<AuthorReadOnlyDtoPagedResult>> GetAsync(QueryParameters queryParams) //cip...66
   {
     //Response<List<AuthorReadOnlyDto>> response;
-    Response<AuthorReadOnlyDtoVirtualiseResponse> response; //cip...66
+    Response<AuthorReadOnlyDtoPagedResult> response; //cip...66
     try
     {
       await GetBearerTokenAsync();
       //var data = await _client.AuthorsAllAsync();
       var data = await _client.AuthorsGETAsync(queryParams.StartIndex, queryParams.PageSize); //cip...66
       //response = new Response<List<AuthorReadOnlyDto>>
-      response = new Response<AuthorReadOnlyDtoVirtualiseResponse> //cip...66
+      response = new Response<AuthorReadOnlyDtoPagedResult> //cip...66
       {
         //Data = data.ToList(),
         Data = data, //cip...66
@@ -113,7 +113,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     catch (ApiException apiException)
     {
       //response = ConvertApiExceptions<List<AuthorReadOnlyDto>>(apiException);
-      response = await ConvertApiExceptions<AuthorReadOnlyDtoVirtualiseResponse>(apiException); //cip...66
+      response = await ConvertApiExceptions<AuthorReadOnlyDtoPagedResult>(apiException); //cip...66
     }
 
     return response;

@@ -10,6 +10,6 @@ namespace BookStoreApp.API.Repositories
     Task<bool> UpdateAsync(T entity);
     Task<bool> DeleteAsync(int id);
     Task<bool> Exists(int id);
-    Task<VirtualiseResponse<TResult>> GetAsync<TResult>(QueryParameters queryParams) where TResult : class; //cip...66
+    Task<PagedResult<TResult>> GetAsync<TResult>(QueryParameters queryParams) where TResult : class; //cip...66
   }
 }

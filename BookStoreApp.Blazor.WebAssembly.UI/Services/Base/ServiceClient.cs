@@ -56,12 +56,12 @@ namespace BookStoreApp.Blazor.WebAssembly.UI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AuthorReadOnlyDtoVirtualiseResponse> AuthorsGETAsync(int? startIndex, int? pageSize);
+        System.Threading.Tasks.Task<AuthorReadOnlyDtoPagedResult> AuthorsGETAsync(int? startIndex, int? pageSize);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<AuthorReadOnlyDtoVirtualiseResponse> AuthorsGETAsync(int? startIndex, int? pageSize, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<AuthorReadOnlyDtoPagedResult> AuthorsGETAsync(int? startIndex, int? pageSize, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Created</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -425,7 +425,7 @@ namespace BookStoreApp.Blazor.WebAssembly.UI.Services.Base
 
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<AuthorReadOnlyDtoVirtualiseResponse> AuthorsGETAsync(int? startIndex, int? pageSize)
+        public virtual System.Threading.Tasks.Task<AuthorReadOnlyDtoPagedResult> AuthorsGETAsync(int? startIndex, int? pageSize)
         {
             return AuthorsGETAsync(startIndex, pageSize, System.Threading.CancellationToken.None);
         }
@@ -433,7 +433,7 @@ namespace BookStoreApp.Blazor.WebAssembly.UI.Services.Base
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<AuthorReadOnlyDtoVirtualiseResponse> AuthorsGETAsync(int? startIndex, int? pageSize, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<AuthorReadOnlyDtoPagedResult> AuthorsGETAsync(int? startIndex, int? pageSize, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -484,7 +484,7 @@ namespace BookStoreApp.Blazor.WebAssembly.UI.Services.Base
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<AuthorReadOnlyDtoVirtualiseResponse>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<AuthorReadOnlyDtoPagedResult>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
@@ -1512,7 +1512,7 @@ namespace BookStoreApp.Blazor.WebAssembly.UI.Services.Base
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.7.1.0 (NJsonSchema v11.6.1.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class AuthorReadOnlyDtoVirtualiseResponse
+    public partial class AuthorReadOnlyDtoPagedResult
     {
 
         [System.Text.Json.Serialization.JsonPropertyName("items")]
