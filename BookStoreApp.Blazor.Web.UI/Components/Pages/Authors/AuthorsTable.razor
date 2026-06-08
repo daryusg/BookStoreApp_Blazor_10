@@ -45,7 +45,10 @@
             new QueryParameters
             {
                 StartIndex = request.StartIndex,
-                PageSize = request.Count
+                PageSize = request.Count,
+                SortBy = "FirstName", @* 20260608 test params *@
+                SortDesc = true @* 20260608 test params *@
+
             });
 
         @*If the request failed, return an empty result set.
