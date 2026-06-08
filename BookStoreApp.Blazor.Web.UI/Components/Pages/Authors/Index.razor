@@ -1,7 +1,16 @@
 ﻿@*chatgpt rewrite*@
 @page "/authors/"
 
-<h3>AUTHORS PAGE TEST 20260608</h3> @*20260808 chatgpt added logging for debugging azure only showing 106*@
+@*20260808 chatgpt added to work out how the logging works in azure*@
+@inject ILogger<AuthorsTable> Logger
+
 <h3>Index</h3>
 
 <AuthorsTable />
+
+@code{
+    protected override void OnInitialized() @*20260808 chatgpt added to work out how the logging works in azure*@
+    {
+        Logger.LogInformation("AUTHORS PAGE COMPONENT INITIALIZED");
+    }
+}
