@@ -12,7 +12,9 @@
     </thead>
 
     <tbody>
-        <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" @ref="virtualizeComponent">
+        <!-- <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" @ref="virtualizeComponent"> -->
+        <!-- 20260608 chatgpt potential fix for azure only showing 106 items in azure -->
+        <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" ItemSize="50" @ref="virtualizeComponent">
             <tr>
                 <td>@author.FirstName</td>
                 <td>@author.LastName</td>
