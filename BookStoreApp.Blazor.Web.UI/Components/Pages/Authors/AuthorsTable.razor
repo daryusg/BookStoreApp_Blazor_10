@@ -65,6 +65,8 @@
             2. the total number of records in the database
             Virtualize uses TotalCount to calculate scrollbar size.*@
         logger.LogInformation("Fetched {Count} authors out of {Total}", response.Data.Items.Count, response.Data.TotalCount);
+        logger.LogInformation("StartIndex={StartIndex}, Count={Count}, Returned={Returned}, Total={Total}", request.StartIndex, request.Count, response.Data.Items.Count, response.Data.TotalCount); //20260808 chatgpt added logging for debugging azure only showing 106 items
+
         return new ItemsProviderResult<AuthorReadOnlyDto>(response.Data.Items, response.Data.TotalCount);
     }
 
