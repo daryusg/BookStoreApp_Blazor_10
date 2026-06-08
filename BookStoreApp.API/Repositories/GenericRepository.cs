@@ -98,7 +98,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class //cip.
     {
         if (!string.IsNullOrWhiteSpace(p.SortBy))
         {
-            return p.SortDesc
+            var sortDesc = p.SortDesc ?? false; //cip...20260609 chatgpt fix: handle nullability of SortDesc
+            return sortDesc
                 ? query.OrderByDescending(e => EF.Property<object>(e, p.SortBy))
                 : query.OrderBy(e => EF.Property<object>(e, p.SortBy));
         }

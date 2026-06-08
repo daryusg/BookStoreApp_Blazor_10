@@ -101,7 +101,7 @@ public class AuthorService : BaseHttpService, IAuthorService //cip...45
     {
       await GetBearerTokenAsync();
       //var data = await _client.AuthorsAllAsync();
-      var data = await _client.AuthorsGETAsync(queryParams.StartIndex, queryParams.PageSize); //cip...66
+      var data = await _client.AuthorsGETAsync(queryParams.StartIndex, queryParams.PageSize, queryParams.SortBy, queryParams.SortDesc, queryParams.Search); //cip...66
       //response = new Response<List<AuthorReadOnlyDto>>
       response = new Response<AuthorReadOnlyDtoPagedResult> //cip...66
       {
