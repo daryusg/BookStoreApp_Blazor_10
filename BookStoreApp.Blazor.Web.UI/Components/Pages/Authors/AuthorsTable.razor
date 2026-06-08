@@ -1,4 +1,5 @@
-﻿@inject IAuthorService authorService //cip...66 chatgpt rewrite
+﻿@*cip...66 chatgpt rewrite*@
+@inject IAuthorService authorService
 @inject IJSRuntime jsRuntime
 @inject ILogger<AuthorsTable> logger
 
@@ -12,8 +13,8 @@
     </thead>
 
     <tbody>
-        <!-- <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" @ref="virtualizeComponent"> -->
-        <!-- 20260608 chatgpt potential fix for azure only showing 106 items in azure -->
+        @* <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" @ref="virtualizeComponent"> *@
+        @* 20260608 chatgpt potential fix for azure only showing 106 items in azure *@
         <Virtualize TItem="AuthorReadOnlyDto" ItemsProvider="LoadAuthors" Context="author" ItemSize="50" @ref="virtualizeComponent">
             <tr>
                 <td>@author.FirstName</td>
@@ -35,7 +36,7 @@
     private Virtualize<AuthorReadOnlyDto>? virtualizeComponent; @*Reference to the Virtualize component. Used so we can call RefreshDataAsync() after deleting an author*@
     private List<AuthorReadOnlyDto> authors = []; @*Stores the currently loaded authors. Needed because Virtualize only provides the visible items. We use this list when looking up an author before deletion*@
 
-    protected override Task OnInitializedAsync() //20260808 chatgpt added to test logstream
+    protected override Task OnInitializedAsync() @*20260808 chatgpt added to test logstream*@
     {
         Console.WriteLine("=== AUTHORS PAGE LOADED ===");
         logger.LogInformation("=== AUTHORS PAGE LOADED ===");
@@ -47,7 +48,7 @@
         request.Count: How many rows Virtualize wants*@
     private async ValueTask<ItemsProviderResult<AuthorReadOnlyDto>> LoadAuthors(ItemsProviderRequest request)
     {
-        logger.LogInformation("LoadAuthors called. StartIndex={StartIndex}, Count={Count}", request.StartIndex, request.Count); //20260808 chatgpt added logging for debugging azure only showing 106 items
+        logger.LogInformation("LoadAuthors called. StartIndex={StartIndex}, Count={Count}", request.StartIndex, request.Count); @*20260808 chatgpt added logging for debugging azure only showing 106 items*@
         
         @*Call the API/service to retrieve a "page" of authors*@
         var response = await authorService.GetAsync(
@@ -74,7 +75,7 @@
             2. the total number of records in the database
             Virtualize uses TotalCount to calculate scrollbar size.*@
         logger.LogInformation("Fetched {Count} authors out of {Total}", response.Data.Items.Count, response.Data.TotalCount);
-        logger.LogInformation("StartIndex={StartIndex}, Count={Count}, Returned={Returned}, Total={Total}", request.StartIndex, request.Count, response.Data.Items.Count, response.Data.TotalCount); //20260808 chatgpt added logging for debugging azure only showing 106 items
+        logger.LogInformation("StartIndex={StartIndex}, Count={Count}, Returned={Returned}, Total={Total}", request.StartIndex, request.Count, response.Data.Items.Count, response.Data.TotalCount); @*20260808 chatgpt added logging for debugging azure only showing 106 items*@
 
         return new ItemsProviderResult<AuthorReadOnlyDto>(response.Data.Items, response.Data.TotalCount);
     }
