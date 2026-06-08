@@ -61,7 +61,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class //cip.
     //    return new PagedResult<TResult> { TotalCount = totalCount, Items = items };
     //}
 
-    public async Task<PagedResult<TResult>> GetAsync<TResult>(QueryParameters queryParams) //20260608 chatgpt potential fix for azure only showing 106 items in azure
+    public async Task<PagedResult<TResult>> GetAsync<TResult>(QueryParameters queryParams) //20260608 chatgpt potential fix for azure only showing 106 items in azure. also, introduced sorting and searching parameters for future use.
         where TResult : class
     {
         var baseQuery = BuildBaseQuery();
@@ -94,7 +94,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class //cip.
         return query;
     }
 
-    private static IQueryable<T> ApplyOrdering(IQueryable<T> query, QueryParameters p) //20260608 chatgpt potential fix for azure only showing 106 items in azure
+    private static IQueryable<T> ApplyOrdering(IQueryable<T> query, QueryParameters p) //20260608 chatgpt potential fix for azure only showing 106 items in azure. also, introduced sorting and searching parameters for future use.
     {
         if (!string.IsNullOrWhiteSpace(p.SortBy))
         {

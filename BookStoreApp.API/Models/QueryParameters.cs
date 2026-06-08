@@ -1,6 +1,6 @@
 ﻿namespace BookStoreApp.API.Models;
 
-public class QueryParameters
+public class QueryParameters //20260608 chatgpt potential fix for azure only showing 106 items in azure. also, introduced sorting and searching parameters for future use.
 {
     public int StartIndex { get; set; }
     public int PageSize { get; set; } = 20;
