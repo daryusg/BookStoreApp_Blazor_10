@@ -99,16 +99,16 @@ public class BooksController : ControllerBase //cip...24
             return NotFound();
         }
 
-        //cip...58 if the bookDto contains new image data, i need to store the new image and delete the old one (if exists)
-        var picName = Path.GetFileName(book.Image); //store the file name from the old image URL for deletion after the new image is stored successfully
-        if (!string.IsNullOrEmpty(bookDto.ImageData) && !string.IsNullOrEmpty(bookDto.OriginalImageName))
-            bookDto.Image = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName); //store the new image and get the URL to save in the database
-
-        _mapper.Map(bookDto, book); // Map the updated values from bookDto to the existing book entity
-                                    //_context.Entry(book).State = EntityState.Modified;
-
         try
         {
+            //cip...58 if the bookDto contains new image data, i need to store the new image and delete the old one (if exists)
+            var picName = Path.GetFileName(book.Image); //store the file name from the old image URL for deletion after the new image is stored successfully
+            if (!string.IsNullOrEmpty(bookDto.ImageData) && !string.IsNullOrEmpty(bookDto.OriginalImageName))
+                bookDto.Image = await CreateFile(bookDto.ImageData, bookDto.OriginalImageName); //store the new image and get the URL to save in the database
+
+            _mapper.Map(bookDto, book); // Map the updated values from bookDto to the existing book entity
+                                        //_context.Entry(book).State = EntityState.Modified;
+
             //await _context.SaveChangesAsync();
             await _booksRepository.UpdateAsync(book); //cip...65
 
