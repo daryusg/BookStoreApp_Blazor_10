@@ -4,6 +4,7 @@
 @inject NavigationManager navManager
 @using AutoMapper
 @inject IMapper _mapper
+@rendermode InteractiveServer //cip...20260609 i remember removing this line but..chatgpt "In .NET 8/9/10 Blazor Web Apps, InputFile is one of the components that requires an interactive render mode. If the component ends up being rendered in a non-interactive context, strange things can happen when the browser tries to wire up the file input events."
 
 @attribute [Authorize(Roles = Roles.Administrator)]
 

@@ -1,0 +1,13 @@
+﻿@page "/filetest"
+
+<h3>File Test</h3>
+
+<InputFile OnChange="Test" />
+
+@code {
+    private Task Test(InputFileChangeEventArgs e)
+    {
+        Console.WriteLine("Hit");
+        return Task.CompletedTask;
+    }
+}

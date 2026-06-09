@@ -208,17 +208,44 @@ public class BooksController : ControllerBase //cip...24
         return await _booksRepository.Exists(id);
     }
 
-    private async Task<string> CreateFile(string imageBase64, string imageName) //cip...56
+    private async Task<string> CreateFile(string imageBase64, string imageName) //cip...56, 20260609 chatgpt
     {
-        var url = HttpContext.Request.Host.Value; // Get the host URL from the current HTTP _context
-        var ext = Path.GetExtension(imageName); // Get the file extension from the original image name
-        var fileName = $"{Guid.NewGuid()}{ext}"; // Generate a unique file name
+        try
+        {
+            var url = HttpContext.Request.Host.Value; // Get the host URL from the current HTTP _context
+            var ext = Path.GetExtension(imageName); // Get the file extension from the original image name
+            var fileName = $"{Guid.NewGuid()}{ext}"; // Generate a unique file name
 
-        var path = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers", fileName); // Combine the web root path, "images" folder, "bookcovers" folder, and the file name to get the full path
-        var bytes = Convert.FromBase64String(imageBase64);
-        await using var stream = new MemoryStream(bytes);
-        using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        await stream.CopyToAsync(fileStream);
-        return $"https://{url}/images/bookcovers/{fileName}";
+            var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers");
+            Directory.CreateDirectory(folder); // Ensure the directory exists
+
+            var path = Path.Combine(folder, fileName); // Combine the web root path, "images" folder, "bookcovers" folder, and the file name to get the full path
+
+            _logger.LogInformation(
+                "Creating image file. WebRootPath: {WebRootPath}, Folder: {Folder}, Path: {Path}, ImageName: {ImageName}",
+                _webHostEnvironment.WebRootPath,
+                folder,
+                path,
+                imageName);
+
+            var bytes = Convert.FromBase64String(imageBase64);
+            await using var stream = new MemoryStream(bytes);
+            await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+            await stream.CopyToAsync(fileStream);
+
+            return $"https://{url}/images/bookcovers/{fileName}";
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "CreateFile failed in {MethodName}. WebRootPath: {WebRootPath}, ImageName: {ImageName}, ImageDataLength: {Length}",
+                nameof(CreateFile),
+                _webHostEnvironment.WebRootPath,
+                imageName,
+                imageBase64?.Length ?? 0);
+
+            throw;
+        }
     }
 }
