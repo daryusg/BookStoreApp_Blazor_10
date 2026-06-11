@@ -4,14 +4,19 @@
 @inject NavigationManager navManager
 @using AutoMapper
 @inject IMapper _mapper
-@rendermode InteractiveServer //cip...20260609 i remember removing this line but..chatgpt "In .NET 8/9/10 Blazor Web Apps, InputFile is one of the components that requires an interactive render mode. If the component ends up being rendered in a non-interactive context, strange things can happen when the browser tries to wire up the file input events."
 
 @attribute [Authorize(Roles = Roles.Administrator)]
 
-@if (!string.IsNullOrWhiteSpace(UploadFileWarning))
+@if (!string.IsNullOrWhiteSpace(uploadFileWarning))
 {
     <div class="alert alert-danger">
-        @UploadFileWarning
+        @uploadFileWarning
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(errorMessage)) //cip...20260611 chatgpt: added to display error message if book creation fails.
+{
+    <div class="alert alert-danger">
+        @errorMessage
     </div>
 }
 
@@ -87,8 +92,9 @@
     private BookUpdateDto Book { get; set; } = new();
 
     private List<AuthorReadOnlyDto> Authors { get; set; } = new();
-    private string UploadFileWarning = string.Empty;
+    private string uploadFileWarning = string.Empty;
     private string img = string.Empty;
+    private string errorMessage = string.Empty; //cip...20260611 chatgpt: added to display error message if book creation fails.
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,9 +112,12 @@
 
     private async Task HandleUpdateBookAsync()
     {
+        errorMessage = string.Empty; //clear error message before attempting update
         var response = await bookService.UpdateAsync(Book.Id, Book);
         if (response.Success)
             NavigateToBooks();
+        else
+            errorMessage = response.Message;
     }
 
     private void NavigateToBooks()
@@ -120,7 +129,7 @@
     {
         try
         {
-            UploadFileWarning = string.Empty;
+            uploadFileWarning = string.Empty;
             var file = args.File;
             if (file == null)
                 return;
@@ -130,14 +139,14 @@
             var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             if (!permittedExtensions.Contains(ext))
             {
-                UploadFileWarning = "Only JPG and PNG files are allowed.";
+                uploadFileWarning = "Only JPG and PNG files are allowed.";
                 return;
             }
 
             var maxFileSize = 1024 * 1024 * 1; // 1MB limit
             if (file.Size > maxFileSize)
             {
-                UploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
+                uploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
                 return;
             }
 
@@ -155,7 +164,7 @@
         }
         catch (Exception ex)
         {
-            UploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
+            uploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
         }
     }
 }

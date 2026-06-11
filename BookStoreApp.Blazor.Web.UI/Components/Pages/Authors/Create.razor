@@ -3,6 +3,13 @@
 @inject NavigationManager navManager
 @attribute [Authorize(Roles = Roles.Administrator)] //cip...50
 
+@if (!string.IsNullOrWhiteSpace(errorMessage)) //cip...20260611 chatgpt: added to display error message if book creation fails.
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
 <h3>Create New Author</h3>
 <br />
 <EditForm Model="Author" OnValidSubmit="HandleCreateAuthorAsync" FormName="CreateAuthor">
@@ -40,11 +47,16 @@
 @code {
     private AuthorCreateDto Author { get; set; } = new();
 
+    private string errorMessage = string.Empty; //cip...20260611 chatgpt: added to display error message if book creation fails.
+
     private async Task HandleCreateAuthorAsync()
     {
+        errorMessage = string.Empty; //clear error message before attempting create
         var response = await authorService.CreateAsync(Author);
         if (response.Success)
             NavigateToAuthors();
+        else
+            errorMessage = response.Message;
     }
 
     private void NavigateToAuthors()

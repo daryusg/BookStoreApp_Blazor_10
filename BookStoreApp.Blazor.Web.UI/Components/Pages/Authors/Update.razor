@@ -5,6 +5,13 @@
 @inject IMapper _mapper
 @attribute [Authorize(Roles = Roles.Administrator)] //cip...50
 
+@if (!string.IsNullOrWhiteSpace(errorMessage)) //cip...20260611 chatgpt: added to display error message if book creation fails.
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+
 <h3>Edit Author</h3>
 <br />
 <EditForm Model="Author" OnValidSubmit="HandleUpdateAuthorAsync" FormName="UpdateAuthor">
@@ -45,6 +52,8 @@
 
     private AuthorUpdateDto Author { get; set; } = new();
 
+    private string errorMessage = string.Empty; //cip...20260611 chatgpt: added to display error message if book creation fails.
+
     //when the component loads, get the author details and populate the form
     override protected async Task OnInitializedAsync()
     {
@@ -58,6 +67,8 @@
         var response = await authorService.UpdateAsync(id, Author);
         if (response.Success)
             NavigateToAuthors();
+        else
+            errorMessage = response.Message;
     }
 
     private void NavigateToAuthors()

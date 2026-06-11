@@ -4,10 +4,16 @@
 @inject NavigationManager navManager
 @attribute [Authorize(Roles = Roles.Administrator)]
 
-@if (!string.IsNullOrWhiteSpace(UploadFileWarning))
+@if (!string.IsNullOrWhiteSpace(uploadFileWarning))
 {
     <div class="alert alert-danger">
-        @UploadFileWarning
+        @uploadFileWarning
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(errorMessage)) //cip...20260611 chatgpt: added to display error message if book creation fails.
+{
+    <div class="alert alert-danger">
+        @errorMessage
     </div>
 }
 
@@ -82,9 +88,9 @@
         Year = DateTime.Now.Year
     };
     private List<AuthorReadOnlyDto> Authors { get; set; } = new();
-    private string UploadFileWarning = string.Empty;
+    private string uploadFileWarning = string.Empty;
     private string img = string.Empty;
-    private string ErrorMessage = string.Empty; //cip...58 chatgpt: added to display error message if book creation fails.
+    private string errorMessage = string.Empty; //cip...58 chatgpt: added to display error message if book creation fails.
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,13 +101,12 @@
 
     private async Task HandleCreateBookAsync()
     {
+        errorMessage = string.Empty; //clear error message before attempting create
         var response = await bookService.CreateAsync(Book);
         if (response.Success)
             NavigateToBooks();
         else
-        {
-            ErrorMessage = response.Message;
-        }
+            errorMessage = response.Message;
     }
 
     private void NavigateToBooks()
@@ -113,7 +118,7 @@
     {
         try
         {
-            UploadFileWarning = string.Empty;
+            uploadFileWarning = string.Empty;
             var file = args.File;
             if (file == null)
                 return;
@@ -123,14 +128,14 @@
             var permittedExtensions = new[] { ".jpg", ".jpeg", ".png" };
             if (!permittedExtensions.Contains(ext))
             {
-                UploadFileWarning = "Only JPG and PNG files are allowed.";
+                uploadFileWarning = "Only JPG and PNG files are allowed.";
                 return;
             }
 
             var maxFileSize = 1024 * 1024 * 1; // 1MB limit
             if (file.Size > maxFileSize)
             {
-                UploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
+                uploadFileWarning = $"File size exceeds the {(maxFileSize / (1024 * 1024))}MB limit.";
                 return;
             }
 
@@ -148,7 +153,7 @@
         }
         catch (Exception ex)
         {
-            UploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
+            uploadFileWarning = $"An error occurred while processing the file: {ex.Message}";
         }
     }
 }
