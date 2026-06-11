@@ -56,7 +56,8 @@
         if (response.Success)
             NavigateToAuthors();
         else
-            errorMessage = response.Message;
+            //errorMessage = response.Message;
+            errorMessage = response.Message + (response.ValidationErrors != null ? $"\nValidation Errors: {response.ValidationErrors}" : string.Empty); //20260611
     }
 
     private void NavigateToAuthors()

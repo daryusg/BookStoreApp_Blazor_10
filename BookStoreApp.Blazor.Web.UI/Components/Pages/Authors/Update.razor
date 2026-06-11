@@ -64,11 +64,14 @@
 
     private async Task HandleUpdateAuthorAsync()
     {
+        errorMessage = string.Empty; //clear error message before attempting update
+
         var response = await authorService.UpdateAsync(id, Author);
         if (response.Success)
             NavigateToAuthors();
         else
-            errorMessage = response.Message;
+            //errorMessage = response.Message;
+            errorMessage = response.Message + (response.ValidationErrors != null ? $"\nValidation Errors: {response.ValidationErrors}" : string.Empty); //20260611
     }
 
     private void NavigateToAuthors()
