@@ -248,4 +248,44 @@ public class BooksController : ControllerBase //cip...24
             throw;
         }
     }
+
+    [HttpGet("testwrite")]
+    [AllowAnonymous] // temporary
+    public IActionResult TestWrite()
+    {
+        try
+        {
+            var folder = Path.Combine(
+                _webHostEnvironment.WebRootPath,
+                "images",
+                "bookcovers");
+
+            Directory.CreateDirectory(folder);
+
+            var filePath = Path.Combine(folder, "test.txt");
+
+            System.IO.File.WriteAllText(
+                filePath,
+                $"Test file created at {DateTime.UtcNow}");
+
+            _logger.LogCritical(
+                "TESTWRITE succeeded. File created at {FilePath}",
+                filePath);
+
+            return Ok(new
+            {
+                Success = true,
+                Folder = folder,
+                FilePath = filePath
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(
+                ex,
+                "TESTWRITE failed");
+
+            return StatusCode(500, ex.ToString());
+        }
+    }
 }
