@@ -87,6 +87,7 @@ public class BooksController : ControllerBase //cip...24
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutBook(int id, BookUpdateDto bookDto) //cip...25
     {
+        _logger.LogInformation("PutBook entered. Id={Id}, Title={Title}, ImageDataLength={Length}", id, bookDto.Title, bookDto.ImageData?.Length ?? 0);
         if (id != bookDto.Id)
         {
             return BadRequest();
@@ -152,6 +153,7 @@ public class BooksController : ControllerBase //cip...24
     {
         try
         {
+            _logger.LogInformation("PostBook entered.");
             var book = _mapper.Map<Book>(bookDto); // Map the BookCreateDto to a Book entity
 
             if (bookDto.ImageData != null && bookDto.OriginalImageName != null) //cip...56 store the image and get the URL to save in the database

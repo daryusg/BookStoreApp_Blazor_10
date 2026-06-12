@@ -112,8 +112,10 @@
 
     private async Task HandleUpdateBookAsync()
     {
+        Console.WriteLine("HandleUpdateBookAsync START"); //20260612 chatgpt
         errorMessage = string.Empty; //clear error message before attempting update
         var response = await bookService.UpdateAsync(Book.Id, Book);
+        Console.WriteLine($"Success={response.Success}"); //20260612 chatgpt
         if (response.Success)
             NavigateToBooks();
         else
