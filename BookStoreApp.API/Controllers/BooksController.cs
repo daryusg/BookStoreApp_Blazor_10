@@ -255,31 +255,47 @@ public class BooksController : ControllerBase //cip...24
     [AllowAnonymous] // temporary
     public IActionResult TestWrite()
     {
+        int testLevel = 1;
         try
         {
-            var folder = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "images",
-                "bookcovers");
-
-            Directory.CreateDirectory(folder);
-
-            var filePath = Path.Combine(folder, "test.txt");
-
-            System.IO.File.WriteAllText(
-                filePath,
-                $"Test file created at {DateTime.UtcNow}");
-
-            _logger.LogCritical(
-                "TESTWRITE succeeded. File created at {FilePath}",
-                filePath);
-
-            return Ok(new
+            switch (testLevel)
             {
-                Success = true,
-                Folder = folder,
-                FilePath = filePath
-            });
+                case 1:
+                    _logger.LogInformation("TESTWRITE level 1: Information log");
+                    System.IO.File.WriteAllText(@"C:\home\site\wwwroot\test.txt", "hello");
+                    return Ok("case 2");
+                case 2:
+                    _logger.LogWarning("TESTWRITE level 2: Warning log");
+                    var folder = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        "images",
+                        "bookcovers");
+
+                    Directory.CreateDirectory(folder);
+
+                    var filePath = Path.Combine(folder, "test.txt");
+
+                    System.IO.File.WriteAllText(
+                        filePath,
+                        $"Test file created at {DateTime.UtcNow}");
+
+                    _logger.LogCritical(
+                        "TESTWRITE succeeded. File created at {FilePath}",
+                        filePath);
+
+                    return Ok(new
+                    {
+                        Success = true,
+                        Folder = folder,
+                        FilePath = filePath
+                    });
+                case 3:
+                    _logger.LogError("TESTWRITE level 3: Error log");
+                    return Ok("case 3");
+                default:
+                    _logger.LogInformation("TESTWRITE default level: Information log");
+                    return Ok("case default");
+            }
         }
         catch (Exception ex)
         {
