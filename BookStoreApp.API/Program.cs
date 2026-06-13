@@ -12,7 +12,6 @@ using Microsoft.Data.SqlClient; //cip...71 troubleshooting deployment connection
 
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseWebRoot("wwwroot"); //20260613 chatgpt suggested this to ensure that the wwwroot folder is used for static files, which is important for serving images and other static content in the application.
 
 // Add services to the container.
 const string connStringName = "BookStoreAppDbConnection"; //20260613
