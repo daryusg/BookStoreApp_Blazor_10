@@ -253,19 +253,21 @@ public class BooksController : ControllerBase //cip...24
 
     [HttpGet("testwrite")]
     [AllowAnonymous] // temporary
-    public IActionResult TestWrite()
+    public IActionResult TestWrite(int testLevel = 1)
     {
-        int testLevel = 1;
         try
         {
             switch (testLevel)
             {
                 case 1:
                     _logger.LogInformation("TESTWRITE level 1: Information log");
-                    System.IO.File.WriteAllText(@"C:\home\site\wwwroot\test.txt", "hello");
-                    return Ok("case 2");
+                    return Ok("case 1");
                 case 2:
                     _logger.LogWarning("TESTWRITE level 2: Warning log");
+                    System.IO.File.WriteAllText(@"C:\home\site\wwwroot\test.txt", "hello");
+                    return Ok("case 2");
+                case 3:
+                    _logger.LogError("TESTWRITE level 3: Error log");
                     var folder = Path.Combine(
                         _webHostEnvironment.WebRootPath,
                         "images",
@@ -289,9 +291,6 @@ public class BooksController : ControllerBase //cip...24
                         Folder = folder,
                         FilePath = filePath
                     });
-                case 3:
-                    _logger.LogError("TESTWRITE level 3: Error log");
-                    return Ok("case 3");
                 default:
                     _logger.LogInformation("TESTWRITE default level: Information log");
                     return Ok("case default");
