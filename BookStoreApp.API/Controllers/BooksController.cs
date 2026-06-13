@@ -257,6 +257,11 @@ public class BooksController : ControllerBase //cip...24
     {
         try
         {
+            var folder = Path.Combine(
+                _webHostEnvironment.WebRootPath,
+                "images",
+                "bookcovers");
+
             switch (testLevel)
             {
                 case 1:
@@ -264,15 +269,16 @@ public class BooksController : ControllerBase //cip...24
                     return Ok("case 1");
                 case 2:
                     _logger.LogWarning("TESTWRITE level 2: Warning log");
-                    System.IO.File.WriteAllText(@"C:\home\site\wwwroot\test.txt", "hello");
+                    var filePath1 = @"C:\home\site\wwwroot\test.txt";
+                    var filePath2 = folder;
+                    var testContents = $"Test file created at {DateTime.UtcNow}";
+                    testContents += Environment.NewLine + $"Path.Combine(_webHostEnvironment.WebRootPath,\"images\",\"bookcovers\": {folder}";
+
+                    System.IO.File.WriteAllText(filePath1, testContents);
+                    System.IO.File.WriteAllText(filePath2, testContents);
                     return Ok("case 2");
                 case 3:
                     _logger.LogError("TESTWRITE level 3: Error log");
-                    var folder = Path.Combine(
-                        _webHostEnvironment.WebRootPath,
-                        "images",
-                        "bookcovers");
-
                     Directory.CreateDirectory(folder);
 
                     var filePath = Path.Combine(folder, "test.txt");
