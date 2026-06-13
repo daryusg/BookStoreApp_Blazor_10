@@ -12,9 +12,12 @@ using Microsoft.Data.SqlClient; //cip...71 troubleshooting deployment connection
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseWebRoot("wwwroot"); //20260613 chatgpt suggested this to ensure that the wwwroot folder is used for static files, which is important for serving images and other static content in the application.
 
 // Add services to the container.
-var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnection");
+const string connStringName = "BookStoreAppDbConnection"; //20260613
+var connString = builder.Configuration.GetConnectionString(connStringName)
+    ?? throw new InvalidOperationException($"Connection string '{connStringName}' is missing.");
 
 Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}"); //cip...71 troubleshooting deployment connection issues
 Console.WriteLine($"Connection string: {Misc.GetRedactedConnectionString(connString)}"); //cip...71 troubleshooting deployment connection issues
