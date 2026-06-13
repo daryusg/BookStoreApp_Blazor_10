@@ -22,6 +22,8 @@ public class BooksController : ControllerBase //cip...24
     private readonly IWebHostEnvironment _webHostEnvironment; //cip...56
     private readonly ILogger<BooksController> _logger; //cip...20260609 injecting a logger to log any exceptions that might occur during the update process
 
+    private string _webOrContent_RootPath; //20260613
+
     //public BooksController(BookStoreDbContext _context, IMapper _mapper, IWebHostEnvironment webHostEnvironment)
     public BooksController(IBooksRepository booksRepository, IMapper mapper, IWebHostEnvironment webHostEnvironment, ILogger<BooksController> logger)
     {
@@ -29,6 +31,7 @@ public class BooksController : ControllerBase //cip...24
         //_context = _context;
         this._mapper = mapper;
         this._webHostEnvironment = webHostEnvironment;
+        _webOrContent_RootPath = _webHostEnvironment.WebRootPath ?? _webHostEnvironment.ContentRootPath;
         this._logger = logger;
     }
 
@@ -115,12 +118,12 @@ public class BooksController : ControllerBase //cip...24
 
             if (!string.IsNullOrEmpty(picName))
             {
-                //new image was stored successfully SO deleting the old one
-                var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers", picName); //remove the old image
+                //new image was stored successfully so deleting its previous image
+                
+                //var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers", picName); //remove the old image
+                var oldImagePath = Path.Combine(_webOrContent_RootPath, "images", "bookcovers", picName); //remove the old image. 20260613
                 if (System.IO.File.Exists(oldImagePath))
-                {
                     System.IO.File.Delete(oldImagePath);
-                }
             }
         }
         catch (DbUpdateConcurrencyException)
@@ -218,18 +221,19 @@ public class BooksController : ControllerBase //cip...24
             var ext = Path.GetExtension(imageName); // Get the file extension from the original image name
             var fileName = $"{Guid.NewGuid()}{ext}"; // Generate a unique file name
 
-            var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers");
+            //var folder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "bookcovers");
+            var folder = Path.Combine(_webOrContent_RootPath, "images", "bookcovers"); //20260613
             Directory.CreateDirectory(folder); // Ensure the directory exists
 
             var path = Path.Combine(folder, fileName); // Combine the web root path, "images" folder, "bookcovers" folder, and the file name to get the full path
 
-            _logger.LogInformation(
-                "Creating image file. WebRootPath: {WebRootPath}, Folder: {Folder}, Path: {Path}, ImageName: {ImageName}",
-                _webHostEnvironment.WebRootPath,
-                folder,
-                path,
-                imageName);
-
+            //_logger.LogInformation(
+            //    "Creating image file. WebRootPath: {WebRootPath}, Folder: {Folder}, Path: {Path}, ImageName: {ImageName}",
+            //    _webHostEnvironment.WebRootPath,
+            //    folder,
+            //    path,
+            //    imageName);
+            _logger.LogInformation($"Creating image file. WebRootPath: {_webOrContent_RootPath}, Folder: {folder}, Path: {path}, ImageName: {imageName}"); //20260613
             var bytes = Convert.FromBase64String(imageBase64);
             await using var stream = new MemoryStream(bytes);
             await using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
@@ -241,9 +245,11 @@ public class BooksController : ControllerBase //cip...24
         {
             _logger.LogError(
                 ex,
-                "CreateFile failed in {MethodName}. WebRootPath: {WebRootPath}, ImageName: {ImageName}, ImageDataLength: {Length}",
+                //"CreateFile failed in {MethodName}. WebRootPath: {WebRootPath}, ImageName: {ImageName}, ImageDataLength: {Length}",
+                "CreateFile failed in {MethodName}. _webOrContent_RootPath: {_webOrContent_RootPath}, ImageName: {ImageName}, ImageDataLength: {Length}", //20260613
                 nameof(CreateFile),
-                _webHostEnvironment.WebRootPath,
+                //_webHostEnvironment.WebRootPath,
+                _webOrContent_RootPath, //20260613
                 imageName,
                 imageBase64?.Length ?? 0);
 
@@ -257,16 +263,24 @@ public class BooksController : ControllerBase //cip...24
     {
         try
         {
-            return Ok(new
-            {
-                _webHostEnvironment.WebRootPath,
-                _webHostEnvironment.ContentRootPath
-            });
-            
-            var folder = Path.Combine(
-                _webHostEnvironment.WebRootPath,
-                "images",
-                "bookcovers");
+            //************
+            //IMPORTANT: in AZURE app service (as opposed to windows 10), the WebRootPath is null but the ContentRootPath is set to the wwwroot folder. So, if i want to write a file to the wwwroot folder, use the ContentRootPath instead of the WebRootPath.
+            //************
+            //in azure:
+            //return Ok(new
+            //{
+            //    _webHostEnvironment.WebRootPath,
+            //    _webHostEnvironment.ContentRootPath
+            //});
+            //
+            //returns:
+            //{
+            //    "webRootPath": null,
+            //    "contentRootPath": "C:\\home\\site\\wwwroot"
+            //}
+
+            //var folder = Path.Combine(_webHostEnvironment.ContentRootPath, "images", "bookcovers");
+            var folder = Path.Combine(_webOrContent_RootPath, "images", "bookcovers"); //20260613
 
             switch (testLevel)
             {
@@ -278,8 +292,8 @@ public class BooksController : ControllerBase //cip...24
                     var filePath1 = @"C:\home\site\wwwroot\test.txt";
                     var filePath2 = folder;
                     var testContents = $"Test file created at {DateTime.UtcNow}";
-                    testContents += Environment.NewLine + $"Path.Combine(_webHostEnvironment.WebRootPath,\"images\",\"bookcovers\": {folder}";
-
+                    //testContents += Environment.NewLine + $"Path.Combine(_webHostEnvironment.WebRootPath,\"images\",\"bookcovers\": {folder}";
+                    testContents += Environment.NewLine + $"Path.Combine(_webOrContent_RootPath,\"images\",\"bookcovers\": {folder}"; //20260613
                     System.IO.File.WriteAllText(filePath1, testContents);
                     System.IO.File.WriteAllText(filePath2, testContents);
                     return Ok("case 2");
