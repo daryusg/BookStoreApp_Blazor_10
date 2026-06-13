@@ -257,6 +257,12 @@ public class BooksController : ControllerBase //cip...24
     {
         try
         {
+            return Ok(new
+            {
+                _webHostEnvironment.WebRootPath,
+                _webHostEnvironment.ContentRootPath
+            });
+            
             var folder = Path.Combine(
                 _webHostEnvironment.WebRootPath,
                 "images",
