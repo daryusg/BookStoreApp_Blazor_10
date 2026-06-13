@@ -253,7 +253,7 @@ public class BooksController : ControllerBase //cip...24
 
     [HttpGet("testwrite")]
     [AllowAnonymous] // temporary
-    public IActionResult TestWrite(int testLevel = 1)
+    public IActionResult TestWrite([FromQuery] int testLevel = 1)
     {
         try
         {
